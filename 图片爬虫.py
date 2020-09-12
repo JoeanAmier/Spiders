@@ -8,7 +8,6 @@ import requests
 import time
 import random
 
-img = re.compile(r'<img alt="(.*)" data-original="(.*)" data-realurl="')
 
 async def get_html(url, num):
     data = []
@@ -17,7 +16,8 @@ async def get_html(url, num):
     await page.setViewport({'width': 1920, 'height': 1080})
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
                             '4.0.4147.105 Safari/537.36 Edg/84.0.522.50')
-    await page.evaluateOnNewDocument('''() => { Object.defineProperties(navigator,{ webdriver:{ get: () => false } }) }''')
+    await page.evaluateOnNewDocument(
+        '''() => { Object.defineProperties(navigator,{ webdriver:{ get: () => false } }) }''')
     await page.goto(url)
     await page.waitFor(2000)
     count = num // 10
@@ -26,6 +26,7 @@ async def get_html(url, num):
         await page.waitFor(3000)
         count -= 1
     html = await page.content()
+    img = re.compile(r'<img alt="(.*)" data-original="(.*)" data-realurl="')
     soup = BeautifulSoup(html, 'html.parser')
     for item in soup.find_all('div', class_='Hhalf oneImg'):
         item = str(item)
@@ -36,6 +37,7 @@ async def get_html(url, num):
         data.append(cache)
     await browser.close()
     return data
+
 
 def sava_xlsx(data):
     book = xlwt.Workbook(encoding='utf-8')
@@ -50,6 +52,7 @@ def sava_xlsx(data):
             data_1 = tap[j]
             sheet.write(i + 1, j, data_1)
     book.save('图片爬虫结果.xlsx')
+
 
 def sava_path(data):
     root = os.getcwd() + '\\爬取结果\\'
@@ -72,6 +75,7 @@ def sava_path(data):
                 print('第' + str(index) + '张图片已存在')
         except:
             print('保存失败')
+
 
 if __name__ == '__main__':
     url = 'https://tu.gxnas.com/'
