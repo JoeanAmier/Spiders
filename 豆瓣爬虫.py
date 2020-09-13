@@ -5,6 +5,7 @@ import urllib.request
 import sqlite3
 import time
 import pymysql
+from termcolor import colored
 
 
 def main(means):  # 以不同的格式进行保存数据
@@ -135,9 +136,6 @@ def savedb(datalist, dbpath):
         sql = '''insert into 豆瓣top250('链接', '电影名称',
             '英文名称', '评分', '评价人数', '介绍', '类型')
             values(%s)''' % ','.join(data)
-        # print(sql)
-        # break
-        # %占位符，以逗号为分隔符，把data连接起来
         cursor.execute(sql)
         print('正在保存第' + str(i + 1) + '条数据')
         list.commit()
@@ -147,7 +145,7 @@ def savedb(datalist, dbpath):
 
 
 def mysql_save(datalist):
-    database = pymysql.connect('localhost', 'root', '202230', 'YongQuan')
+    database = pymysql.connect('localhost', 'root', '数据库密码', '数据库名称')
     try:
         sql = '''create table 豆瓣top250
             (TOP int(3) primary key auto_increment,
@@ -179,7 +177,7 @@ def mysql_save(datalist):
 
 
 if __name__ == '__main__':
-    print('使用MySQL数据库保存爬取数据需要先安装MySQl')
+    print(colored('使用MySQL数据库保存爬取数据需要先安装MySQl\n且需要在代码中修改MySQL数据库密码和连接数据库名称', 'red'))
     means = str(input('输入保存形式：xlsx表格、SQLite数据库、MySQL数据库'))
     start = time.time()
     main(means)
