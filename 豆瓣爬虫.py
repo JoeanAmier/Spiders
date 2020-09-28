@@ -68,11 +68,11 @@ def get_data(douban):
         for item in soup.find_all('div', class_="item"):  # 解析每一部电影信息
             data = []  # 临时储存数据，包含一部电影信息
             item = str(item)  # 转化为字符串
-            link = re.findall(findlink, item)[0]  # link为字符串元素
+            link = re.findall(findlink, item)[0]
             data.append(link)  # 添加临时储存数据
             title = re.findall(findtitle, item)
             if len(title) == 2:
-                c = title[0].replace('/', '')  # 替换字符串内容，查找元素，替换为
+                c = title[0].replace('/', '')
                 data.append(c)
                 e = title[1].replace('/', '')
                 e = e.strip()
@@ -145,40 +145,44 @@ def savedb(datalist, dbpath):
 
 
 def mysql_save(datalist):
-    database = pymysql.connect('localhost', 'root', '数据库密码', '数据库名称')
     try:
-        sql = '''create table 豆瓣top250
-            (TOP int(3) primary key auto_increment,
-            链接 text,
-            电影名称 text,
-            英文名称 text,
-            评分 float,
-            评价人数 mediumint,
-            介绍 text,
-            类型 text)'''
-        cursor = database.cursor()
-        cursor.execute(sql)
-        database.commit()
-        print('新建表成功')
-    except:
-        print('数据表已存在')
-    for i, data in enumerate(datalist):  # 把索引赋给i，把元素赋给data
-        for index in range(0, 7):
-            data[index] = '"' + str(data[index]) + '"'
-        sql = '''insert into 豆瓣top250(链接, 电影名称,
-            英文名称, 评分, 评价人数, 介绍, 类型)
-            values(%s)''' % ','.join(data)
-        cursor.execute(sql)
-        print('正在保存第' + str(i + 1) + '条数据')
-        database.commit()
-    print('数据表已保存完毕')
-    database.close()
-    print('数据库已关闭')
+        database = pymysql.connect('localhost', 'root', '数据库密码', '数据库名称')
+        try:
+            sql = '''create table 豆瓣top250
+                (TOP int(3) primary key auto_increment,
+                链接 text,
+                电影名称 text,
+                英文名称 text,
+                评分 float,
+                评价人数 mediumint,
+                介绍 text,
+                类型 text)'''
+            cursor = database.cursor()
+            cursor.execute(sql)
+            database.commit()
+            print('新建表成功')
+        except BaseException:
+            print('数据表已存在')
+        for i, data in enumerate(datalist):  # 把索引赋给i，把元素赋给data
+            for index in range(0, 7):
+                data[index] = '"' + str(data[index]) + '"'
+            sql = '''insert into 豆瓣top250(链接, 电影名称,
+                英文名称, 评分, 评价人数, 介绍, 类型)
+                values(%s)''' % ','.join(data)
+            cursor.execute(sql)
+            print('正在保存第' + str(i + 1) + '条数据')
+            database.commit()
+        print('数据表已保存完毕')
+        database.close()
+        print('数据库已关闭')
+    except BaseException:
+        raise ValueError('数据库名称或密码错误')
 
 
 if __name__ == '__main__':
     print(colored('使用MySQL数据库保存爬取数据需要先安装MySQl\n且需要在代码中修改MySQL数据库密码和连接数据库名称', 'red'))
-    means = str(input('输入保存形式：xlsx表格、SQLite数据库、MySQL数据库'))
+    print('输入“表格”或“SQLite”或“MySQL”')
+    means = input('选择保存形式：xlsx表格、SQLite数据库、MySQL数据库')
     start = time.time()
     main(means)
     print('运行时间：%.5f' % float(time.time() - start))
