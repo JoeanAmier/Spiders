@@ -11,11 +11,12 @@ def get_url(keyword, pages):
     url_list = []
     while pages >= 1 and pages <= 100:
         if pages == 1:
-            url = 'https://search.jd.com/Search?keyword={}&wq={}'.format(keyword, keyword)
+            url = 'https://search.jd.com/Search?keyword={}&wq={}'.format(
+                keyword, keyword)
             pages -= 1
         else:
-            url = 'https://search.jd.com/Search?keyword={}&wq={}&page={}'.format(keyword, keyword,
-                                                                                 pages * 2 - 1)
+            url = 'https://search.jd.com/Search?keyword={}&wq={}&page={}'.format(
+                keyword, keyword, pages * 2 - 1)
             pages -= 1
         url_list.append(url)
     if len(url_list) != 0:
@@ -99,7 +100,7 @@ def save_data(data):
     for i, j in enumerate(list):
         try:
             db.col.insert_one(j)
-        except:
+        except BaseException:
             raise ValueError(j)
 
 
@@ -111,8 +112,11 @@ def main():
     data = get_data(html)
     data = goto_url(data)
     data = deal_data(data)
-    print(data)
-    save_data(data)
+    save = input('是否保存数据？\n保存全部数据到Mongo数据库直接回车，不保存数据请输入任意字符后回车（获取数据后直接输出）')
+    if bool(save):
+        save_data(data)
+    else:
+        print(data)
     print('程序结束')
 
 
