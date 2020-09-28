@@ -12,7 +12,8 @@ import random
 async def get_html(url, num):
     img = re.compile(r'<img alt="(.*)" data-original="(.*)" data-realurl="')
     data = []
-    browser = await launch({'headless': True, 'args': ['--disable-infobars']})  # 启动浏览器
+    # 启动浏览器
+    browser = await launch({'headless': True, 'args': ['--disable-infobars']})
     page = await browser.newPage()  # 新建页面
     await page.setViewport({'width': 1920, 'height': 1080})  # 设置窗口大小
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
@@ -50,12 +51,12 @@ def sava_xlsx(data):
         tap = data[i]
         if len(data) >= 100:
             print('\r', end='')
-            print('正在保存数据到表格: {:.2f}%'.format(((i + 1) / len(data)) * 100), '▉' * ((i + 1) // (len(data) // 50)),
-                  end='')
+            print('正在保存数据到表格: {:.2f}%'.format(
+                ((i + 1) / len(data)) * 100), '▉' * ((i + 1) // (len(data) // 50)), end='')
         elif len(data) < 100 and len(data) > 0:
             print('\r', end='')
-            print('正在保存数据到表格: {:.2f}%'.format(((i + 1) / len(data)) * 100), '▉' * ((i + 1) * 50 // (len(data))),
-                  end='')
+            print('正在保存数据到表格: {:.2f}%'.format(
+                ((i + 1) / len(data)) * 100), '▉' * ((i + 1) * 50 // (len(data))), end='')
         else:
             print('出现错误')
         for j in range(0, 2):
@@ -67,8 +68,9 @@ def sava_xlsx(data):
 
 def sava_path(data):
     root = os.getcwd() + '\\爬取结果\\'
-    header = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
-                            '4.0.4147.105 Safari/537.36 Edg/84.0.522.50'}
+    header = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
+        '4.0.4147.105 Safari/537.36 Edg/84.0.522.50'}
     repeat = 0
     for index, item in enumerate(data):
         url = str(item[1])
@@ -94,13 +96,16 @@ def sava_path(data):
                     save.close()
             else:
                 repeat += 1
-        except:
-            print('\n保存失败')
-    print('\n重复图片：' + str(repeat) + '张')
+        except BaseException:
+            print('')
+            print('保存失败')
+    print('')
+    print('重复图片：' + str(repeat) + '张')
 
 
 if __name__ == '__main__':
     url = 'https://tu.gxnas.com/'
+    print('爬取数量非准确数量')
     num = int(input('爬取数量：'))
     data = asyncio.get_event_loop().run_until_complete(get_html(url, num))
     sava_xlsx(data)
