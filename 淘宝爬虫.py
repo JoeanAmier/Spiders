@@ -7,10 +7,10 @@ import json
 
 
 def get_html(url, cookie):
-    header = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrom'
-                            'e/85.0.4183.83 Safari/537.36',
-              'cookie': cookie
-              }
+    header = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrom'
+        'e/85.0.4183.83 Safari/537.36',
+        'cookie': cookie}
     html = requests.get(url=url, headers=header)
     html = html.content.decode('utf-8')
     return html
@@ -23,12 +23,16 @@ def deal_data(html):
     data = []
     for i in range(44):
         cache = []
-        cache.append(file['mods']['itemlist']['data']['auctions'][i]['raw_title'])
-        cache.append(file['mods']['itemlist']['data']['auctions'][i]['view_price'])
-        cache.append(file['mods']['itemlist']['data']['auctions'][i]['item_loc'])
+        cache.append(file['mods']['itemlist']['data']
+                     ['auctions'][i]['raw_title'])
+        cache.append(file['mods']['itemlist']['data']
+                     ['auctions'][i]['view_price'])
+        cache.append(file['mods']['itemlist']['data']
+                     ['auctions'][i]['item_loc'])
         try:
-            cache.append(file['mods']['itemlist']['data']['auctions'][i]['view_sales'])
-        except:
+            cache.append(file['mods']['itemlist']['data']
+                         ['auctions'][i]['view_sales'])
+        except BaseException:
             cache.append(None)
         cache.append(file['mods']['itemlist']['data']['auctions'][i]['nick'])
         data.append(cache)
@@ -56,13 +60,17 @@ def main():
     page = int(input('爬取页数：'))
     cookie = str(input('粘贴cookie到此处：'))
     datalist = []
-    for i in range(page):
-        data = get_html(url.format(key, page * 44), cookie)
-        data = deal_data(data)
-        for j in range(len(data)):
-            datalist.append(data[j])
-        time.sleep(random.randrange(3, 7, 1))
-    savexlsx(datalist)
+    try:
+        for i in range(page):
+            data = get_html(url.format(key, page * 44), cookie)
+            data = deal_data(data)
+            for j in range(len(data)):
+                datalist.append(data[j])
+            time.sleep(random.randrange(3, 7, 1))
+        savexlsx(datalist)
+    except BaseException:
+        print('请检查 cookie 是否有误')
+    print('程序结束')
 
 
 if __name__ == '__main__':
