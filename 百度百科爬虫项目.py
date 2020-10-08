@@ -98,10 +98,25 @@ class DataOutput():
         self.datas.append(data)
 
     def output_file(self):
-        with open('百度百科爬虫结果.txt', 'w+', encoding='utf-8') as file:
+        with open('百度百科爬虫结果.html', 'w+', encoding='utf-8') as html:
+            html.write('<!DOCTYPE html>')
+            html.write('<html lang="zh-CN">')
+            html.write('<head>')
+            html.write('    <meta charset="UTF-8">')
+            html.write('    <title>爬取结果</title>')
+            html.write('</head>')
+            html.write('<body>')
+            html.write('<table>')
+            html.write('<tr>\n<th>链接</th>\n<th>关键词</th>\n<th>描述</th></tr>')
             for item in self.datas:
-                file.write('%s' % ','.join(item))
-                file.write('\n')
+                html.write('<tr>')
+                html.write('<td>%s</td>' % item[0])
+                html.write('<td>%s</td>' % item[1])
+                html.write('<td>%s</td>' % item[2])
+                html.write('</tr>')
+            html.write('</table>')
+            html.write('</body>')
+            html.write('</html>')
 
 
 class SpiderMan():
