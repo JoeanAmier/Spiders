@@ -85,7 +85,9 @@ def save_data(data):
 def main():
     url = 'https://spa2.scrape.center/'
     """电影数据网站，无反爬，数据通过 Ajax 加载，数据接口参数加密且有时间限制
-    适合动态页面渲染爬取或 JavaScript 逆向分析。"""
+    适合动态页面渲染爬取或 JavaScript 逆向分析
+    此程序为动态页面渲染爬取
+    """
     start = time.time()
     data = get_data(url)
     save_data(data)
