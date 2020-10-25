@@ -5,7 +5,7 @@ def get_html(url):
     pass
 
 
-def open_url(url_list):
+def open_url(url):
     pass
 
 

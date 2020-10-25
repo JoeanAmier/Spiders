@@ -1,19 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver import ChromeOptions
 import sqlite3
 import time
 from bs4 import BeautifulSoup
 import re
 
 
-def open_url(url):
-    browser = webdriver.Edge()
+def open_url(browser, url):
     browser.get(url)
     WebDriverWait(
         browser, timeout=5).until(
         lambda x: x.find_element_by_class_name('el-card__body'))
     html = browser.page_source
-    browser.close()
     return html
 
 
@@ -29,9 +28,12 @@ def get_data(url):
         r'<p class="score m-t-md m-b-n-sm" data-v-724ecf3b="">(.*?)</p>')
     template = url + 'page/'
     data = []
+    option = ChromeOptions()
+    option.add_argument('--headless')
+    browser = webdriver.Chrome(options=option)
     for page in range(1, 11):
         base = template + str(page)
-        html = open_url(base)
+        html = open_url(browser, base)
         html = BeautifulSoup(html, 'html.parser')
         for item in html.findAll('div', class_='el-card__body'):
             item = str(item)
@@ -53,6 +55,7 @@ def get_data(url):
             movie.append(published)
             movie.append(score)
             data.append(movie)
+    browser.close()
     return data
 
 
@@ -86,8 +89,7 @@ def main():
     url = 'https://spa2.scrape.center/'
     """电影数据网站，无反爬，数据通过 Ajax 加载，数据接口参数加密且有时间限制
     适合动态页面渲染爬取或 JavaScript 逆向分析
-    此程序为动态页面渲染爬取
-    """
+    此程序为动态页面渲染爬取"""
     start = time.time()
     data = get_data(url)
     save_data(data)

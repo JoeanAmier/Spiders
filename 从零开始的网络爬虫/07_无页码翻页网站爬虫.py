@@ -72,6 +72,7 @@ def main():
     """
     真实网址：https://spa3.scrape.center/
     电影数据网站，无反爬，数据通过 Ajax 加载，无页码翻页，下拉至底部刷新，适合 Ajax 分析和动态页面渲染爬取。
+    与爬取异步加载网站方法相同
     分析 Ajax 请求，通过 Ajax 请求直接获取 json 格式的网页数据
     下面的 url 是分析 Ajax 请求后得到的网络地址
     offset 参数代表页数，规律是：offset = (页数 - 1) * 10
