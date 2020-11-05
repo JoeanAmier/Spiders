@@ -13,11 +13,10 @@ def get_url(keyword, pages):
         if pages == 1:
             url = 'https://search.jd.com/Search?keyword={}'.format(
                 keyword)
-            pages -= 1
         else:
             url = 'https://search.jd.com/Search?keyword={}&page={}'.format(
                 keyword, pages * 2 - 1)
-            pages -= 1
+        pages -= 1
         url_list.append(url)
     if len(url_list) != 0:
         url_list.reverse()
@@ -27,185 +26,28 @@ def get_url(keyword, pages):
 
 
 def deal_data(html):
-    findprice = re.compile(r'<em>￥</em><i>(.*?)</i>')
-    findinfo0 = re.compile(r'(.*?)<font class=".*?">(.*?)</font>(.*?)')
-    findinfo00 = re.compile(
-        r'(.*?)<font class=".*?">(.*?)</font>(.*?)<font class=".*?">(.*?)</font>(.*?)')
-    findinfo1 = re.compile(
-        r'<em>(.*?)<font class=".*?">(.*?)</font>(.*?)</em>')
-    findinfo2 = re.compile(r'<em>(.*?)</em>\n<i class=".*?" id=".*?">.*?</i>')
-    findinfo3 = re.compile(
-        r'<em><span class=".*?" style=".*?">.*?</span>.*?\n(.*?)<font class=".*?">(.*?)</font></em>')
-    findinfo4 = re.compile(
-        r'<font class=".*?">(.*?)</font>(.*?)<font class=".*?">(.*?)</font>(.*?)<font class=".*?">(.*?)</font>(.*?)<font class=".*?">(.*?)</font>(.*?)</em>')
-    findinfo5 = re.compile(
-        r'<font class=".*?">(.*?)</font>(.*?)<font class=".*?">(.*?)</font>(.*?)<font class=".*?">(.*?)</font>(.*?)</em>')
-    findinfo6 = re.compile(
-        r'<font class=".*?">(.*?)</font>(.*?)<font class=".*?">(.*?)</font>(.*?)</em>')
-    findinfo7 = re.compile(r'<font class=".*?">(.*?)</font>(.*?)')
-    findinfo8 = re.compile(
-        r'<em><span class=".*?" style=".*?">.*?</span>.*?\n(.*?)</em>')
-    findstore = re.compile(
-        r'<span class=".*?"><a class=".*?" href=".*?" onclick=".*?" target="_blank" title=".*?">(.*?)</a>')
-    findgoods = re.compile(r'<i.*?data-tips="京东自营，品质保障">自营</i>')
-    data_list = []
-    data = BeautifulSoup(html, 'html.parser')
-    i = 1
-    for item in data.findAll('li', class_='gl-item'):
-
-        cache = []
-        item = str(item)
-        price = re.findall(findprice, item)
-        if len(price) == 1:
-            cache.append(price[0])
-        else:
-            print(item)
-            print(price)
-            print('第' + str(i) + '条数据价格异常')
-            raise ValueError
-        info = re.findall(findinfo1, item)
-        if bool(info):
-            if len(info[0]) == 3:
-                info = '%s' % ''.join(list(info[0]))
-                cache.append(info)
-            else:
-                print(item)
-                print(info)
-                print('第' + str(i) + '条数据描述异常')
-                raise ValueError
-        else:
-            info = re.findall(findinfo2, item)
-            if bool(info):
-                if len(info) == 1:
-                    info = info[0]
-                    cache.append(info)
-                else:
-                    print(item)
-                    print(info)
-                    print('第' + str(i) + '条数据描述异常')
-                    raise ValueError
-            else:
-                info = re.findall(findinfo3, item)
-                if bool(info):
-                    if len(info[0]) == 2:
-                        info = '%s' % ''.join(list(info[0]))
-                        cache.append(info)
-                    else:
-                        print(item)
-                        print(info)
-                        print('第' + str(i) + '条数据描述异常')
-                        raise ValueError
-                else:
-                    info = re.findall(findinfo4, item)
-                    if bool(info):
-                        if len(info[0]) == 8:
-                            info = '%s' % ''.join(list(info[0]))
-                            cache.append(info)
-                        else:
-                            print(item)
-                            print(info)
-                            print('第' + str(i) + '条数据描述异常')
-                            raise ValueError
-                    else:
-                        info = re.findall(findinfo5, item)
-                        if bool(info):
-                            if len(info[0]) == 6:
-                                info = '%s' % ''.join(list(info[0]))
-                                cache.append(info)
-                            else:
-                                print(item)
-                                print(info)
-                                print('第' + str(i) + '条数据描述异常')
-                                raise ValueError
-                        else:
-                            info = re.findall(findinfo6, item)
-                            if bool(info):
-                                if len(info[0]) == 4:
-                                    info = '%s' % ''.join(list(info[0]))
-                                    cache.append(info)
-                                else:
-                                    print(item)
-                                    print(info)
-                                    print('第' + str(i) + '条数据描述异常')
-                                    raise ValueError
-                            else:
-                                info = re.findall(findinfo7, item)
-                                if bool(info):
-                                    if len(info[0]) == 2:
-                                        info = '%s' % ''.join(list(info[0]))
-                                        cache.append(info)
-                                    else:
-                                        print(item)
-                                        print(info)
-                                        print('第' + str(i) + '条数据描述异常')
-                                        raise ValueError
-                                else:
-                                    info = re.findall(findinfo8, item)
-                                    if bool(info):
-                                        if len(info) == 1:
-                                            info = info[0]
-                                            cache.append(info)
-                                        else:
-                                            print(item)
-                                            print(info)
-                                            print('第' + str(i) + '条数据描述异常')
-                                            raise ValueError
-                                    else:
-                                        print(item)
-                                        print(info)
-                                        print('第' + str(i) + '条数据描述异常')
-                                        raise ValueError
-        info_test = re.findall(findinfo00, info)
-        if bool(info_test):
-            if len(info_test) != 1:
-                info_cache = ''
-                for j in range(len(info_test)):
-                    info_cache += '%s' % ''.join(list(info_test[j]))
-                cache[1] = info_cache
-            else:
-                info = '%s' % ''.join(list(info_test[0]))
-                cache[1] = info
-        else:
-            info = re.findall(findinfo0, info)
-            if bool(info):
-                info = '%s' % ''.join(list(info[0]))
-                cache[1] = info
-            else:
-                pass
-        cache[1] = cache[1].replace('\xa0', ' ')
-        store = re.findall(findstore, item)
-        if len(store) == 1:
-            cache.append(store[0])
-        else:
-            cache.append(None)
-            print('第' + str(i) + '条数据店铺异常')
-        if bool(re.findall(findgoods, item)):
-            cache.append('自营')
-        else:
-            cache.append('非自营')
-        i += 1
-        data_list.append(cache)
-    for i in data_list:
-        print(i)
+    soup = BeautifulSoup(html, 'lxml')
+    for item in soup.select('ul.gl-warp.clearfix > li.gl-item'):
+        print(item.select('div.p-price > strong > i')[0].text)
+        print(item.select('div.p-name.p-name-type-2 > a > em')[0].text)
+        print(item.select('div.p-commit > strong > a')[0].text)
+        print(item.select('div.p-shop > span > a')[0].text)
+        for i in item.select('div.p-icons > i'):
+            print(i.text)
 
 
 async def get_html_test(url):
     browser = await launch()
     page = await browser.newPage()
     await page.setUserAgent(FakeUserAgent().chrome)
-    await page.evaluate('''() =>{
-        Object.defineProperties(navigator,{ webdriver:{ get: () => false } });
-        window.navigator.chrome = { runtime: {},  };
-        Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
-        Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5,6], });
-        }''')
+    await page.evaluateOnNewDocument('Object.defineProperty(navigator, "webdriver", {get: () => undefined})')
     htmls = ''
     for i in url:
         await page.goto(i)
-        await page.waitFor(2500)
+        await page.waitFor(random.randrange(2, 5, 1))
         for j in range(12):
             await page.keyboard.press('PageDown')
-            time.sleep(random.randrange(1, 5, 1))
+            time.sleep(random.randrange(1, 4, 1))
         htmls += await page.content()
     await browser.close()
     return htmls
