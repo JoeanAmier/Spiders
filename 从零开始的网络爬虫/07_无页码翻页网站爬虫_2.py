@@ -26,32 +26,36 @@ def get_html(url):
 def get_data(html):
     html = BeautifulSoup(html, 'html.parser')
     data = []
-    for item in html.findAll('div', class_='el-row'):
-        movie = []
-        print(item)
-        chinese_name = item.select('a.router-link-exact-active.router-link-active > h2')
-        # english_name = re.findall(findname, item)[0][1]
-        # type = ''
-        # for i in re.findall(findtype, item):
-        #     type += i + ' '
-        # country = re.findall(findinfo, item)[0][0]
-        # time = re.findall(findinfo, item)[0][1]
-        # published = re.findall(findpublished, item)
-        # if len(published) == 1:
-        #     published = published[0]
-        # else:
-        #     published = None
-        # score = re.findall(findscore, item)[0].strip()
-        movie.append(chinese_name)
-        # movie.append(english_name)
-        # movie.append(type.strip())
-        # movie.append(country)
-        # movie.append(time)
-        # movie.append(published)
-        # movie.append(score)
-        # data.append(movie)
-        print(movie)
-        break
+    for item in html.findAll('div', class_='el-card__body'):
+        try:
+            movie = []
+            name = item.select(
+                'a.router-link-exact-active.router-link-active > h2')[0].text
+            chinese_name = name.split(' - ')[0]
+            english_name = name.split(' - ')[1]
+            type = [i.text.strip()
+                    for i in item.select('div.categories > button > span')]
+            country = item.select(
+                'div.el-col-md-16 > div.m-v-sm.info:nth-child(3) > span')[0].text
+            time = item.select(
+                'div.el-col-md-16 > div.m-v-sm.info:nth-child(3) > span')[2].text
+            published = item.select(
+                'div.el-col-md-16 > div.m-v-sm.info:nth-child(4) > span')[0]
+            if len(published) == 1:
+                published = published.text
+            else:
+                published = None
+            score = item.select('p.score.m-t-md.m-b-n-sm')[0].text
+            movie.append(chinese_name)
+            movie.append(english_name)
+            movie.append('%s' % ','.join(type))
+            movie.append(country.strip())
+            movie.append(time.strip())
+            movie.append(published.strip())
+            movie.append(score.strip())
+            data.append(movie)
+        except IndexError:
+            continue
     return data
 
 
@@ -90,7 +94,7 @@ def main():
     start = time.time()
     html = get_html(url)
     data = get_data(html)
-    # save_data(data)
+    save_data(data)
     print('运行时间：{:.6f}'.format(time.time() - start))
 
 
