@@ -10,14 +10,16 @@ from pymongo import MongoClient
 def get_data(hits):
     path = os.getcwd() + '\\data'
     if hits % 10:
-        all = hits // 10 + 1
+        all = hits // 10 + 2
     else:
-        all = hits // 10
+        all = hits // 10 + 1
     if os.path.exists(path):
         with open('data', 'rb') as f:
             data = pickle.load(f)
             long = len(data)
+            print('当前列表数据数量：', long)
             if long == hits:
+                print('列表数据获取完毕')
                 return
             long = long // 10 + 1
             all_data = data
@@ -59,13 +61,14 @@ def get_data(hits):
                'sec-fetch-mode': 'cors',
                'sec-fetch-site': 'same-origin',
                'referer': 'https://www.mycancergenome.org/content/biomarkers/'}
-    # z = 0
+    z = 0
     for page in range(long, all):
         try:
             response = session.get(url.format(page), headers=headers, timeout=10)
-            # z += 1
+            z += 1
         except:
-            raise TimeoutError('获取列表超时')
+            print('获取列表超时')
+            break
         time.sleep(random.randrange(1, 4, 1) + random.random())
         if response.status_code == 200:
             cache = response.json()
@@ -89,9 +92,9 @@ def get_data(hits):
         启用此代码则每次运行获取1000条数据
         注释此代码则运行获取全部数据
         """
-        # if z >= 100:
-        #     print(len(all_data))
-        #     break
+        if z >= 100:
+            print(len(all_data))
+            break
     with open('data', 'wb') as f:
         pickle.dump(all_data, f)
 
@@ -116,6 +119,7 @@ def get_info():
     if os.path.exists(path):
         with open('progress', 'rb') as f:
             progress = pickle.load(f)
+            print('当前数据数量：', progress)
     else:
         progress = 0
     with open('data', 'rb') as f:
@@ -125,6 +129,11 @@ def get_info():
     collection = db['详细数据']
     z = 0
     for i in data[progress:]:
+        """
+        部分基因无法访问详情页
+        """
+        if i[0] in ['MALT1']:
+            continue
         if len(i) == 1:
             info = {'Name': '', 'Drugs': None, 'Info': None}
             info['Name'] = i[0]
@@ -148,21 +157,31 @@ def get_info():
                     save_data(info, collection)
                     time.sleep(random.randrange(1, 4, 1) + random.random())
                 else:
+                    print('访问超时或响应码错误，请重试')
                     break
             except:
                 time.sleep(random.randrange(1, 4, 1) + random.random())
                 z += 1
-                cache = open_url_T_2(headers, i[0])
-                if cache:
-                    info = {'Name': '', 'Drugs': '', 'Info': ''}
+                try:
+                    cache = open_url_T_2(headers, i[0])
+                except ValueError:
+                    break
+                if cache == 'None':
+                    info = {'Name': '', 'Drugs': '', 'Info': None}
                     info['Name'] = i[0]
                     info['Drugs'] = i[1]
-                    info['Info'] = cache
                     save_data(info, collection)
                 else:
-                    break
+                    if cache:
+                        info = {'Name': '', 'Drugs': '', 'Info': ''}
+                        info['Name'] = i[0]
+                        info['Drugs'] = i[1]
+                        info['Info'] = cache
+                        save_data(info, collection)
+                    else:
+                        print('访问超时或响应码错误，请重试')
+                        break
             progress += 1
-
         else:
             raise ValueError(i)
         # break  # 调试使用
@@ -170,11 +189,18 @@ def get_info():
         启用此代码则每次运行发送50次请求后关闭程序
         注释此代码则运行获取全部数据
         """
-        if z >= 50:
+        if z >= 500:
             break
     with open('progress', 'wb') as f:
         pickle.dump(progress, f)
-        # print(progress)  # 调试使用
+        print('已获取数据数量：', progress)  # 调试使用
+
+
+def auto_name(name):
+    name = name.replace(')', '').replace('*', '').replace('_', '-').replace('(', '-').replace(';', '-').replace(' ',
+                                                                                                                '-').replace(
+        '--', '-').lower()
+    return name
 
 
 def open_url_F(name):
@@ -208,10 +234,7 @@ def open_url_F(name):
 
 def open_url_T_1(headers, name, url='https://www.mycancergenome.org/content/alteration/{}/'):
     try:
-        response = requests.get(
-            url.format(
-                name.replace(')', '').replace('(', '-').replace(';', '-').replace(' ', '-').replace('--', '-').lower()),
-            headers=headers, timeout=10)
+        response = requests.get(url.format(auto_name(name)), headers=headers, timeout=10)
         # print(response.url)  # 调试代码
         # print(response.status_code)
     except:
@@ -256,15 +279,13 @@ def open_url_T_1(headers, name, url='https://www.mycancergenome.org/content/alte
     elif response.status_code == 404:
         raise ValueError
     else:
+        print(response.url)
         return None
 
 
 def open_url_T_2(headers, name, url='https://www.mycancergenome.org/content/gene/{}/'):
     try:
-        response = requests.get(
-            url.format(
-                name.replace(')', '').replace('(', '-').replace(';', '-').replace(' ', '-').replace('--', '-').lower()),
-            headers=headers, timeout=10)
+        response = requests.get(url.format(auto_name(name)), headers=headers, timeout=10)
         # print(response.url)  # 调试代码
         # print(response.status_code)
     except:
@@ -280,7 +301,10 @@ def open_url_T_2(headers, name, url='https://www.mycancergenome.org/content/gene
         for i in info:
             content += i.text
         data.append(content.replace('\n', '').replace('  ', '').strip())
-        num = soup.select('div#therapies-toggle > p:last-of-type > a')[0].text
+        try:
+            num = soup.select('div#therapies-toggle > p:last-of-type > a')[0].text
+        except IndexError:
+            return 'None'
         reference = soup.select('div.small-12.columns > p.reference')[int(num) - 1].text
         data.append(reference.replace('\n', '').replace('  ', '').strip())
         BDT = soup.select('div#therapies-toggle > div.about-gene-therapy-row')
@@ -307,8 +331,10 @@ def open_url_T_2(headers, name, url='https://www.mycancergenome.org/content/gene
                 continue
         return data
     elif response.status_code == 302:
-        raise ValueError(name, response.url)
+        print(name, response.url)
+        raise ValueError
     else:
+        print(response.url)
         return None
 
 
@@ -319,7 +345,7 @@ def save_data(data, collection):
 def main():
     hits = 16380  # 数据总数，手动修改
     get_data(hits)
-    # get_info()
+    get_info()
     print('程序已结束')
 
 
