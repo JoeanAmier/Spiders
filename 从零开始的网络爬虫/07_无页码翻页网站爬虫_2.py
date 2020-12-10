@@ -12,13 +12,15 @@ def get_html(url):
         option.add_argument('--headless')
         browser = webdriver.Chrome(options=option)
         browser.get(url)
-        time.sleep(5)
+        time.sleep(10)
         webdriver.ActionChains(browser).key_down(Keys.END)
-        time.sleep(0.5)
+        time.sleep(2)
         webdriver.ActionChains(browser).key_up(Keys.END)
         time.sleep(2)
         html = browser.page_source
         return html
+    except BaseException:
+        raise ValueError('发生错误')
     finally:
         browser.quit()
 
@@ -90,6 +92,7 @@ def main():
     """
     电影数据网站，无反爬，数据通过 Ajax 加载，无页码翻页，下拉至底部刷新，适合 Ajax 分析和动态页面渲染爬取。
     本程序使用动态网站渲染方法爬取
+    代码测试时间：2020/12/10
     """
     start = time.time()
     html = get_html(url)

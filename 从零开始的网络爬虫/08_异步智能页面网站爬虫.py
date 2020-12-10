@@ -64,6 +64,7 @@ def main():
     分析 Ajax 请求，通过 Ajax 请求直接获取 json 格式的网页数据
     下面的 url 是分析 Ajax 请求后得到的网络地址
     offset 参数代表页数，规律是：offset = (页数 - 1) * 10
+    代码测试时间：2020/12/10
     """
     url = 'https://spa4.scrape.center/api/news/?limit=10&offset='
     start = time.time()
