@@ -88,7 +88,10 @@ def save_data(data):
 
 def main():
     url = 'https://ssr1.scrape.center/'
-    """电影数据网站，无反爬，数据通过服务端渲染，适合基本爬虫练习。"""
+    """
+    电影数据网站，无反爬，数据通过服务端渲染，适合基本爬虫练习。
+    代码测试时间：2020/12/10
+    """
     start = time.time()
     html = get_html(url)
     data = get_data(html)
