@@ -79,6 +79,7 @@ def main():
     下面的 url 是分析 Ajax 请求后得到的网络地址
     offset 参数代表页数，规律是：offset = (页数 - 1) * 10
     token 参数为加密参数，需要 JavaScript 逆向分析
+    代码测试时间：2020/12/10
     """
     url = 'https://spa2.scrape.center/api/movie/?limit=10&offset={}&token={}'
     start = time.time()

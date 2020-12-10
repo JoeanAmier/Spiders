@@ -90,7 +90,8 @@ def main():
     url = 'https://ssr4.scrape.center/'
     """
     电影数据网站，无反爬，每个响应增加了 5 秒延迟，适合测试慢速网站爬取或做爬取速度测试，减少网速干扰。
-    代码测试时间：2020/12/10"""
+    代码测试时间：2020/12/10
+    """
     start = time.time()
     html = get_html(url)
     data = get_data(html)
