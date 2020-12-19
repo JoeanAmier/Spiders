@@ -88,7 +88,11 @@ def save_data(data):
 
 def main():
     url = 'https://ssr2.scrape.center/'
-    """电影数据网站，无反爬，无 HTTPS 证书，适合用作 HTTPS 证书验证。"""
+    """
+    电影数据网站，无反爬，无 HTTPS 证书，适合用作 HTTPS 证书验证。
+    代码测试时间：2020/12/19
+    测试失败，网站异常
+    """
     start = time.time()
     html = get_html(url)
     data = get_data(html)
