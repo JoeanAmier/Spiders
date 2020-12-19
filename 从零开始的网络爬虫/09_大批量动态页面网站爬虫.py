@@ -70,6 +70,7 @@ def main():
     """
     真实网址：https://spa5.scrape.center/
     图书网站，无反爬，数据通过 Ajax 加载，有翻页，适合大批量动态页面渲染抓取。
+    代码测试时间：2020/12/19
     """
     url = 'https://spa5.scrape.center/api/book/?limit=18&offset={}'
     start = time.time()
