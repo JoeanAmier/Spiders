@@ -90,7 +90,10 @@ def save_data(data):
 
 def main():
     url = 'https://login2.scrape.center/login?next=/'
-    """对接 Session + Cookies 模拟登录，适合用作 Session + Cookies 模拟登录练习。"""
+    """
+    对接 Session + Cookies 模拟登录，适合用作 Session + Cookies 模拟登录练习。
+    代码测试时间：2020/12/27
+    """
     start = time.time()
     html = get_html(url)
     data = get_data(html)
