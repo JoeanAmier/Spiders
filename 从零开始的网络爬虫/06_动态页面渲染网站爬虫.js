@@ -150,7 +150,7 @@ app.get('/', function (req, res) {
                 return t
             }
         };
-    var t = Math.round((new Date).getTime() / 1e3).toString(), e = 1;
+    var t = Math.round((new Date).getTime() / 1e3).toString();
     var r = ["/api/movie", t];
     var o = sha1(r.join(',').toString());
     var c = Base64.encode([o, t].join(','));
