@@ -5,8 +5,6 @@ import random
 
 
 class YouDao:
-    """可供调用"""
-
     def __init__(self):
         self.cookie = self.get_cookie()
 
@@ -21,8 +19,7 @@ class YouDao:
             'Host': 'fanyi.youdao.com',
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
-                          '7.0.4280.141 Safari/537.36 Edg/87.0.664.75'
-        }
+                          '7.0.4280.141 Safari/537.36 Edg/87.0.664.75'}
         response = requests.get('http://fanyi.youdao.com/', headers=headers)
         cookie = [i.name + '=' + i.value for i in response.cookies]
         return cookie
@@ -36,7 +33,8 @@ class YouDao:
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            'Cookie': '%s' % ','.join(self.cookie),
+            'Cookie': '%s' % ','.join(
+                self.cookie),
             "DNT": "1",
             "Host": "fanyi.youdao.com",
             "Origin": "http://fanyi.youdao.com",
@@ -44,8 +42,7 @@ class YouDao:
             "Referer": "http://fanyi.youdao.com/",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chro"
                           "me/87.0.4280.141 Safari/537.36 Edg/87.0.664.75",
-            "X-Requested-With": "XMLHttpRequest"
-        }
+            "X-Requested-With": "XMLHttpRequest"}
         lts = str(int(time.time() * 1000))
         salt = lts + str(random.randint(0, 10))
         sign = self.get_sign(key, salt)
