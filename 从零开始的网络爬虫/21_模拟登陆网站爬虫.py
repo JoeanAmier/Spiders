@@ -105,4 +105,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    """网站异常，无法测试"""
+    pass
+    # main()
