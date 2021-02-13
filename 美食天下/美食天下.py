@@ -7,12 +7,47 @@ import json
 import os
 import re
 
-LINK = [[0, 'https://home.meishichina.com/recipe/recai/page/{}/', '热菜'],
-        [1, 'https://home.meishichina.com/recipe/liangcai/page/{}/', '凉菜'],
-        [2, 'https://home.meishichina.com/recipe/tanggeng/page/{}/', '汤羹'],
-        [3, 'https://home.meishichina.com/recipe/zhushi/page/{}/', '主食'],
-        [4, 'https://home.meishichina.com/recipe/xiaochi/page/{}/', '小吃'],
-        [5, 'https://home.meishichina.com/recipe/xican/page/{}/', '西餐']]
+
+def get_data():
+    if os.path.exists('data.json'):
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+            data = data['data']
+        return data
+    else:
+        with open('data.json', 'w') as f:
+            data = {
+                "data": [[0, "url_1", "demo_1", 100],
+                         [1, "url_2", "demo_2", 100]]
+            }
+            f.write(json.dumps(data))
+        print('已在当前目录生成 data.json 文件')
+        print('请在 data.json 文件输入程序必要信息后再运行本程序！')
+        print(
+            '格式: [索引（整数）, 链接（字符串）, 数据表名称（字符串）, 爬取页数（整数）]\n按格式在 data.json 输入相关信息，注意最外侧还有一对中括号')
+        return None
+
+
+def check_data(data):
+    if not data:
+        return None
+    _ = -1
+    for i, j in enumerate(data):
+        if j[0] - _ != 1:
+            return None
+        _ = i
+        if not re.findall(
+                r'^https://home.meishichina.com/recipe/[a-z]*?/$',
+                j[1]):
+            return None
+        if not j[2]:
+            return None
+        if j[3] < 1 or j[3] > 100:
+            return None
+        data[i][1] = j[1] + 'page/{}/'
+    return data
+
+
 HEADERS_1 = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,applicatio'
               'n/signed-exchange;v=b3;q=0.9',
@@ -34,28 +69,29 @@ HEADERS_1 = {
 
 HEADERS_2 = HEADERS_1.copy()
 del HEADERS_2['Referer']
-DATABASE = 'meishichina'
+DATABASE = 'deliciousFood'
 
 
 def get_json():
     if os.path.exists('MySQL.json'):
         with open('MySQL.json', 'r') as f:
             template = json.load(f)
+            host = template['host']
             user = template['user']
             password = template['password']
-        return user, password
+        return host, user, password
     else:
         with open('MySQL.json', 'w') as f:
-            template = {'user': '', 'password': ''}
+            template = {'host': '', 'user': '', 'password': ''}
             f.write(json.dumps(template))
         print('已在当前目录生成 MySQL.json 文件')
-        print('请在 MySQL.json 文件保存数据库信息后再运行本程序！')
-        exit()
+        print('请在 MySQL.json 文件输入数据库信息后再运行本程序！')
+        return None, None, None
 
 
-def create_db(user, password):
+def create_db(host, user, password):
     try:
-        db = pymysql.connect(host='localhost', user=user, password=password)
+        db = pymysql.connect(host=host, user=user, password=password)
     except pymysql.err.OperationalError:
         print('连接数据库失败，请检查 MySQL.json 文件')
         exit()
@@ -69,8 +105,7 @@ def create_db(user, password):
     db.close()
 
 
-def create_table(db, cursor):
-    global LINK
+def create_table(list_, db, cursor):
     sql = """create table {}(
     ID MEDIUMINT primary key,
     链接 text not null,
@@ -78,7 +113,8 @@ def create_table(db, cursor):
     食材 text not null,
     步骤 text not null,
     效果图 text not null)"""
-    for i in LINK:
+    # 图片数据 MEDIUMBLOB
+    for i in list_:
         try:
             cursor.execute(sql.format(i[2]))
             db.commit()
@@ -148,7 +184,7 @@ def deal_data(html):
 
 def get_id(url):
     id_ = re.findall(
-        r'https://home.meishichina.com/recipe-([0-9]*?).html',
+        r'^https://home.meishichina.com/recipe-([0-9]*?).html',
         url)[0]
     return id_
 
@@ -181,19 +217,25 @@ def save_process(progress):
 
 
 def main():
-    user, password = get_json()
-    create_db(user, password)
+    _ = get_data()
+    crawler_data = check_data(_)
+    host, user, password = get_json()
+    if None in [crawler_data, host, user, password]:
+        print('data.json 或 MySQL.json 文件内容错误')
+        exit()
+    create_db(host, user, password)
     db = pymysql.connect(
-        host='localhost',
+        host=host,
         user=user,
         password=password,
         db=DATABASE)
     cursor = db.cursor()
-    create_table(db, cursor)
+    create_table(crawler_data, db, cursor)
     if os.path.exists('progress.json'):
         with open('progress.json', 'r') as f:
             progress = json.load(f)
-        if progress['type'] == 5 and progress['page'] > 100:
+        if progress['type'] + 1 == len(
+                crawler_data) and progress['page'] > crawler_data[progress['type']][3]:
             print('已获取全部数据')
             exit()
     else:
@@ -205,19 +247,18 @@ def main():
     over = False
     # over = True
     print('除非发生未知异常，否则不要直接关闭程序')
-    for item in LINK[start_type:]:
+    for item in crawler_data[start_type:]:
         if over:
             break
         progress['type'] = item[0]
-        if progress['page'] > 100:
+        if progress['page'] > item[3]:
             progress['page'] = 1
-            break
-        for page in range(start_page, 101):
-            # if (n := (page - start_page)) >= 10:
-            #     """单次运行爬取10页，注释代码块可取消限制"""
-            #     print(f'本次运行已爬取 {n} 页数据')
+            break  # 单次运行只爬取一种类型
+        for page in range(start_page, item[3] + 1):
+            # if page - start_page >= 10:
+            #     """单次运行爬取10页，注释代码块可取消限制，修改代码可修改单次爬取页数"""
             #     over = True
-            # time.sleep(random.random() + random.randint(10, 30))
+            time.sleep(random.random() + random.randint(5, 15))
             if over:
                 break
             print('正在爬取{}的第{}页数据'.format(item[2], page))
