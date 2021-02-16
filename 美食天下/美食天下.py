@@ -7,15 +7,43 @@ import json
 import os
 import re
 
+HEADERS_1 = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,applicatio'
+              'n/signed-exchange;v=b3;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'DNT': '1',
+    'Host': 'home.meishichina.com',
+    'Pragma': 'no-cache',
+    'Referer': 'https://www.meishichina.com/',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-site',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
+                  '8.0.4324.150 Safari/537.36 Edg/88.0.705.63'}
+
+HEADERS_2 = HEADERS_1.copy()
+del HEADERS_2['Referer']
+DATABASE = 'deliciousFood'
+
+
+# ROOT = os.getcwd() + '\\cache\\'
+# if not os.path.exists(ROOT):
+#     os.mkdir(ROOT)
+
 
 def get_data():
     if os.path.exists('data.json'):
-        with open('data.json', 'r') as f:
+        with open('data.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
             data = data['data']
         return data
     else:
-        with open('data.json', 'w') as f:
+        with open('data.json', 'w', encoding='utf-8') as f:
             data = {
                 "data": [[0, "url_1", "demo_1", 100],
                          [1, "url_2", "demo_2", 100]]
@@ -48,28 +76,22 @@ def check_data(data):
     return data
 
 
-HEADERS_1 = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,applicatio'
-              'n/signed-exchange;v=b3;q=0.9',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'DNT': '1',
-    'Host': 'home.meishichina.com',
-    'Pragma': 'no-cache',
-    'Referer': 'https://www.meishichina.com/',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-site',
-    'Sec-Fetch-User': '?1',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
-                  '8.0.4324.150 Safari/537.36 Edg/88.0.705.63'}
-
-HEADERS_2 = HEADERS_1.copy()
-del HEADERS_2['Referer']
-DATABASE = 'deliciousFood'
+HEADERS_3 = {
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q'
+              '=0.8,application/signed-exchange;v=b3;q=0.9',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'zh-CN,zh;q=0.9',
+    'cache-control': 'no-cache',
+    'dnt': '1',
+    'pragma': 'no-cache',
+    'referer': 'https://home.meishichina.com/',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chro'
+                  'me/87.0.4280.141 Safari/537.36'}
 
 
 def get_json():
@@ -95,7 +117,7 @@ def create_db(host, user, password):
     except pymysql.err.OperationalError:
         print('连接数据库失败，请检查 MySQL.json 文件')
         exit()
-    sql = f"create database {DATABASE}"
+    sql = f"create database {DATABASE} CHARACTER SET utf8mb4"
     cursor = db.cursor()
     try:
         cursor.execute(sql)
@@ -119,7 +141,7 @@ def create_table(list_, db, cursor):
             cursor.execute(sql.format(i[2]))
             db.commit()
         except pymysql.err.OperationalError:
-            return
+            continue
 
 
 def wait_time():
@@ -154,6 +176,32 @@ def open_url(session, url):
         return None, None
 
 
+def get_img(url):
+    global HEADERS_3
+    response = requests.get(url, headers=HEADERS_3)
+    if response.status_code == 200:
+        wait_time()
+        return response.content
+    else:
+        print(response.status_code, url)
+        return None
+
+
+def save_img(id_, img):
+    global ROOT
+    root = os.path.join(ROOT, id_ + '.jpg')
+    with open(root, 'wb') as f:
+        f.write(img)
+
+
+def image_data(id_):
+    global ROOT
+    root = os.path.join(ROOT, id_ + '.jpg')
+    with open(root, 'rb') as f:
+        img = f.read()
+    return img
+
+
 def deal_data(html):
     soup = BeautifulSoup(html, 'lxml')
     try:
@@ -166,6 +214,8 @@ def deal_data(html):
     except IndexError:
         return 'Error'
     id_ = get_id(link)
+    # save_img(id_, get_img(img))
+    # img_data = image_data(id_)
     data = [
         id_,
         link,
@@ -189,26 +239,28 @@ def get_id(url):
     return id_
 
 
-def save_data(db, cursor, data, type):
+def save_data(db, cursor, data, type_):
+    save = True
     for i in range(6):
         data[i] = '"' + data[i] + '"'
-    sql = """insert into {}
-    values({})""".format(type, '%s' % ','.join(data))
+    sql = """insert into {} (ID, 链接, 菜名, 食材, 步骤, 效果图)
+    values({})""".format(type_, '%s' % ','.join(data))
     try:
         cursor.execute(sql)
         db.commit()
         print('已保存数据', data[0], data[2])
-        return True
-    except pymysql.err.IntegrityError as e:
-        print(data)
-        print(type)
-        print(e)
-        ok = 'Y'
-        # ok = input('疑似发生异常（可能是数据重复），是否继续运行？\n（输入 Y 继续运行，不要直接停止程序！！！）')
-        if ok == 'Y':
-            return True
-        else:
-            return False
+    except pymysql.err.IntegrityError:
+        save = False
+    # try:
+    #     if data[-1] and save:
+    #         sql = "insert into %s (图片数据) values (%s)"
+    #         args = (type_, pymysql.Binary(data[-1]))
+    #         cursor.execute(sql, args)
+    #         db.commit()
+    #         print('已保存图片', data[0], data[2])
+    # except pymysql.err.IntegrityError:
+    #     save = False
+    return save
 
 
 def save_process(progress):
@@ -217,6 +269,7 @@ def save_process(progress):
 
 
 def main():
+    print('除非发生未知异常，否则不要直接关闭程序')
     _ = get_data()
     crawler_data = check_data(_)
     host, user, password = get_json()
@@ -231,22 +284,25 @@ def main():
         db=DATABASE)
     cursor = db.cursor()
     create_table(crawler_data, db, cursor)
+    over = False
     if os.path.exists('progress.json'):
         with open('progress.json', 'r') as f:
             progress = json.load(f)
-        if progress['type'] + 1 == len(
-                crawler_data) and progress['page'] > crawler_data[progress['type']][3]:
-            print('已获取全部数据')
-            exit()
+        if progress['type'] == len(
+                crawler_data) - 1 and progress['page'] > crawler_data[progress['type']][3]:
+            print('已获取全部数据，现在可以修改 data.json 文件')
+            over = True
+            progress['type'] += 1
+            progress['page'] = 1
+        elif progress['type'] == len(crawler_data):
+            print('已获取全部数据，现在可以修改 data.json 文件')
+            over = True
     else:
         progress = {'type': 0, 'page': 1}
     _ = progress.copy()
     start_type = _['type']
     start_page = _['page']
     session = requests.Session()
-    over = False
-    # over = True
-    print('除非发生未知异常，否则不要直接关闭程序')
     for item in crawler_data[start_type:]:
         if over:
             break
@@ -261,10 +317,11 @@ def main():
             time.sleep(random.random() + random.randint(5, 15))
             if over:
                 break
-            print('正在爬取{}的第{}页数据'.format(item[2], page))
+            print('正在爬取 {} 的第 {} 页数据'.format(item[2], page))
             session, urls = get_urls(session, item[1], page)
             if session and urls:
                 for info in urls:
+                    # break  # 测试使用
                     if over:
                         break
                     session, html = open_url(session, info)
@@ -284,6 +341,7 @@ def main():
                     else:
                         over = True
                         break
+                    # break  # 测试使用
                 if over:
                     progress['page'] = page
                 else:

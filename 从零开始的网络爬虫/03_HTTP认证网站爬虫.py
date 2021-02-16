@@ -90,7 +90,7 @@ def main():
     url = 'https://ssr3.scrape.center/'
     """
     电影数据网站，无反爬，带有 HTTP Basic Authentication，适合用作 HTTP 认证案例，用户名密码均为 admin。
-    代码测试时间：2020/12/19
+    代码测试时间：2021/2/16
     测试失败，网站异常
     """
     start = time.time()
