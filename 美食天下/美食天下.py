@@ -30,8 +30,9 @@ HEADERS_2 = HEADERS_1.copy()
 del HEADERS_2['Referer']
 DATABASE = 'deliciousFood'
 
+ROOT = os.getcwd() + '\\cache\\'
 
-# ROOT = os.getcwd() + '\\cache\\'
+
 # if not os.path.exists(ROOT):
 #     os.mkdir(ROOT)
 
@@ -52,7 +53,8 @@ def get_data():
         print('已在当前目录生成 data.json 文件')
         print('请在 data.json 文件输入程序必要信息后再运行本程序！')
         print(
-            '格式: [索引（整数）, 链接（字符串）, 数据表名称（字符串）, 爬取页数（整数）]\n按格式在 data.json 输入相关信息，注意最外侧还有一对中括号')
+            '格式: [索引（整数）, 链接（字符串）, 类型（字符串）, 爬取页数（整数）]\n按格式在 data.json 输入相关信息，注意最外侧还有一对中括号')
+        print('爬取任务未完成时不要修改 data.json')
         return None
 
 
@@ -62,15 +64,19 @@ def check_data(data):
     _ = -1
     for i, j in enumerate(data):
         if j[0] - _ != 1:
+            print(j, '索引错误')
             return None
         _ = i
         if not re.findall(
-                r'^https://home.meishichina.com/recipe/[a-z]*?/$',
+                r'^https://home.meishichina.com/recipe/[a-z0-9]*?/$',
                 j[1]):
+            print(j, '链接错误')
             return None
         if not j[2]:
+            print(j, '类型错误')
             return None
         if j[3] < 1 or j[3] > 100:
+            print(j, '爬取页数错误')
             return None
         data[i][1] = j[1] + 'page/{}/'
     return data
@@ -127,21 +133,32 @@ def create_db(host, user, password):
     db.close()
 
 
-def create_table(list_, db, cursor):
-    sql = """create table {}(
-    ID MEDIUMINT primary key,
-    链接 text not null,
-    菜名 text not null,
-    食材 text not null,
-    步骤 text not null,
-    效果图 text not null)"""
+def create_table(db, cursor):
+    # sql = """create table {}(
+    # ID MEDIUMINT primary key,
+    # 链接 text not null,
+    # 菜名 text not null,
+    # 食材 text not null,
+    # 步骤 text not null,
+    # 效果图 text not null)"""
+    # # 图片数据 MEDIUMBLOB
+    # for i in list_:
+    #     try:
+    #         cursor.execute(sql.format(i[2]))
+    #         db.commit()
+    #     except pymysql.err.OperationalError:
+    #         continue
+    sql = """create table if not exists 美食天下(
+        ID MEDIUMINT primary key,
+        链接 text not null,
+        菜名 text not null,
+        食材 text not null,
+        步骤 text not null,
+        效果图 text not null,
+        类型 text not null)"""
     # 图片数据 MEDIUMBLOB
-    for i in list_:
-        try:
-            cursor.execute(sql.format(i[2]))
-            db.commit()
-        except pymysql.err.OperationalError:
-            continue
+    cursor.execute(sql)
+    db.commit()
 
 
 def wait_time():
@@ -154,10 +171,9 @@ def get_urls(session, url, page):
     print('当前网址：', url)
     response = session.get(url, headers=HEADERS_1)
     if response.status_code == 200:
-        urls = []
         soup = BeautifulSoup(response.content, 'lxml')
-        for i in soup.select('ul > li > div.detail > h2 > a'):
-            urls.append(i['href'])
+        urls = [i['href']
+                for i in soup.select('ul > li > div.detail > h2 > a')]
         wait_time()
         return session, urls
     else:
@@ -188,10 +204,14 @@ def get_img(url):
 
 
 def save_img(id_, img):
-    global ROOT
-    root = os.path.join(ROOT, id_ + '.jpg')
-    with open(root, 'wb') as f:
-        f.write(img)
+    if img:
+        global ROOT
+        root = os.path.join(ROOT, id_ + '.jpg')
+        with open(root, 'wb') as f:
+            f.write(img)
+        print(f'已保存图片：{id_}')
+    else:
+        print(f'保存图片失败：{id_}')
 
 
 def image_data(id_):
@@ -214,8 +234,8 @@ def deal_data(html):
     except IndexError:
         return 'Error'
     id_ = get_id(link)
+    """需要下载图片到本地请取消注释"""
     # save_img(id_, get_img(img))
-    # img_data = image_data(id_)
     data = [
         id_,
         link,
@@ -225,26 +245,25 @@ def deal_data(html):
         '%s' %
         ''.join(step).replace('"', "'"),
         img]
-    if None in data:
-        print(data)
-        return None
-    else:
+    if None not in data:
         return data
+    print(data)
+    return None
 
 
 def get_id(url):
-    id_ = re.findall(
+    return re.findall(
         r'^https://home.meishichina.com/recipe-([0-9]*?).html',
         url)[0]
-    return id_
 
 
 def save_data(db, cursor, data, type_):
     save = True
-    for i in range(6):
+    data.append(type_)
+    for i in range(7):
         data[i] = '"' + data[i] + '"'
-    sql = """insert into {} (ID, 链接, 菜名, 食材, 步骤, 效果图)
-    values({})""".format(type_, '%s' % ','.join(data))
+    sql = """insert into 美食天下 (ID, 链接, 菜名, 食材, 步骤, 效果图, 类型)
+    values(%s)""" % ','.join(data)
     try:
         cursor.execute(sql)
         db.commit()
@@ -270,6 +289,7 @@ def save_process(progress):
 
 def main():
     print('除非发生未知异常，否则不要直接关闭程序')
+    print('爬取任务未完成时不要修改 data.json')
     _ = get_data()
     crawler_data = check_data(_)
     host, user, password = get_json()
@@ -283,7 +303,7 @@ def main():
         password=password,
         db=DATABASE)
     cursor = db.cursor()
-    create_table(crawler_data, db, cursor)
+    create_table(db, cursor)
     over = False
     if os.path.exists('progress.json'):
         with open('progress.json', 'r') as f:
@@ -341,11 +361,8 @@ def main():
                     else:
                         over = True
                         break
-                    # break  # 测试使用
-                if over:
-                    progress['page'] = page
-                else:
-                    progress['page'] = page + 1
+                    break  # 测试使用
+                progress['page'] = page if over else page + 1
             else:
                 over = True
                 break
