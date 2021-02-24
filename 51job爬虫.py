@@ -93,9 +93,7 @@ def deal_data(data):
         else:
             attribute_text = None
         jobwelf_list = '%s' % ','.join(i['jobwelf_list'])
-        if bool(jobwelf_list):
-            pass
-        else:
+        if not bool(jobwelf_list):
             jobwelf_list = None
         company_name = i['company_name']
         companytype_text = i['companytype_text']
@@ -121,15 +119,11 @@ def deal_data(data):
 
 def get_page(html, page):
     item, items = deal_data(html)
-    if items % 50 != 0:
-        pages = items // 50 + 1
-    else:
-        pages = items // 50
-    if page <= pages and page >= 1:
+    pages = items // 50 + 1 if items % 50 != 0 else items // 50
+    if pages >= page >= 1:
         return page - 1
-    else:
-        print('获取到总页数为：' + str(pages) + '\n输入页数超出总页数或页数输入错误\n本次运行程序只获取第一页数据')
-        return 0
+    print('获取到总页数为：' + str(pages) + '\n输入页数超出总页数或页数输入错误\n本次运行程序只获取第一页数据')
+    return 0
 
 
 def main():

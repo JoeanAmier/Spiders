@@ -38,16 +38,11 @@ def get_data(html):
         movie = []
         chinese_name = re.findall(findname, item)[0][0]
         english_name = re.findall(findname, item)[0][1]
-        type = ''
-        for i in re.findall(findtype, item):
-            type += i + ' '
+        type = ''.join(i + ' ' for i in re.findall(findtype, item))
         country = re.findall(findinfo, item)[0][0]
         time = re.findall(findinfo, item)[0][1]
         published = re.findall(findpublished, item)
-        if len(published) == 1:
-            published = published[0]
-        else:
-            published = None
+        published = published[0] if len(published) == 1 else None
         score = re.findall(findscore, item)[0].strip()
         movie.append(chinese_name)
         movie.append(english_name)
@@ -90,8 +85,8 @@ def main():
     url = 'https://ssr3.scrape.center/'
     """
     电影数据网站，无反爬，带有 HTTP Basic Authentication，适合用作 HTTP 认证案例，用户名密码均为 admin。
-    代码测试时间：2021/2/16
-    测试失败，网站异常
+    代码测试时间：2021/2/24
+    测试失败，500 服务器错误
     """
     start = time.time()
     html = get_html(url)

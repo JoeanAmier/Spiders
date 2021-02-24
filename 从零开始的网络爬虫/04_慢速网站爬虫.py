@@ -38,16 +38,11 @@ def get_data(html):
         movie = []
         chinese_name = re.findall(findname, item)[0][0]
         english_name = re.findall(findname, item)[0][1]
-        type = ''
-        for i in re.findall(findtype, item):
-            type += i + ' '
+        type = ''.join(i + ' ' for i in re.findall(findtype, item))
         country = re.findall(findinfo, item)[0][0]
         time = re.findall(findinfo, item)[0][1]
         published = re.findall(findpublished, item)
-        if len(published) == 1:
-            published = published[0]
-        else:
-            published = None
+        published = published[0] if len(published) == 1 else None
         score = re.findall(findscore, item)[0].strip()
         movie.append(chinese_name)
         movie.append(english_name)
@@ -90,7 +85,7 @@ def main():
     url = 'https://ssr4.scrape.center/'
     """
     电影数据网站，无反爬，每个响应增加了 5 秒延迟，适合测试慢速网站爬取或做爬取速度测试，减少网速干扰。
-    代码测试时间：2020/12/10
+    代码测试时间：2021/2/24
     """
     start = time.time()
     html = get_html(url)

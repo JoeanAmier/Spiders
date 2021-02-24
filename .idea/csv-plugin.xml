@@ -24,6 +24,41 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\从零开始的网络爬虫\01_基础网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\02_无HTTPS证书网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\03_HTTP认证网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\04_慢速网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\05_异步加载网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\链家\链家二手房爬虫.py">
           <value>
             <Attribute>
