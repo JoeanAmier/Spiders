@@ -38,7 +38,7 @@ def deal_data(html):
         title = i.select('div.title > a')[0].text.strip()
         flood = [_.text.strip() for _ in i.select('div.flood > div > a')]
         address = i.select('div.address > div')[0].text.strip()
-        followInfo = i.select('div.followInfo')[0].text.strip()
+        follow_info = i.select('div.followInfo')[0].text.strip()
         tag = [_.text.strip() for _ in i.select('div.tag > span')]
         info = [_.text.strip() for _ in i.select('div.priceInfo > div')]
         cache = [
@@ -47,7 +47,7 @@ def deal_data(html):
             '%s' %
             '-'.join(flood),
             address,
-            followInfo,
+            follow_info,
             '%s' %
             ','.join(tag),
             info[0],
@@ -69,6 +69,7 @@ def save_data(data, pg):
 
 
 if __name__ == '__main__':
+    """使用无头浏览器爬取"""
     url = input(
         '正确网址示例：https://bj.lianjia.com/ershoufang/dongcheng/\n错误网址示例：https://bj.lianjia.com/ershoufang/\n输入网址：')
     pg = int(input('输入爬取页数（1~100）：'))
