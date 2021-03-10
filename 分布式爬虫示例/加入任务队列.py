@@ -15,10 +15,14 @@ def get_url():
     response = requests.get('https://www.baidu.com/', headers=header)
     code = response.encoding
     html = parsel.Selector(text=response.content.decode(code))
-    data = []
-    for item in html.xpath('//ul[@class="s-hotsearch-content"]/li/a/span[2]').css('::text').getall():
-        data.append(item)
-    return data
+    return [
+        item
+        for item in html.xpath(
+            '//ul[@class="s-hotsearch-content"]/li/a/span[2]'
+        )
+            .css('::text')
+            .getall()
+    ]
 
 
 if __name__ == '__main__':
