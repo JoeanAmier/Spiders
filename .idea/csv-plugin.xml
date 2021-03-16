@@ -227,6 +227,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\哔哩哔哩\B站弹幕爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\哔哩哔哩\B站评论爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\链家\链家二手房爬虫.py">
           <value>
             <Attribute>

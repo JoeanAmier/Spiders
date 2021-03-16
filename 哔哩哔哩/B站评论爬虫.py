@@ -12,22 +12,16 @@ def input_data():
     url = input('输入视频网址：')
     if url[-1] != '/':
         url += '/'
-    else:
-        pass
     check_url = re.compile(r'^https://www.bilibili.com/video/(.*?)/$')
     bv = re.findall(check_url, url)
-    if bool(bv):
-        if len(bv[0].split('/')) == 1:
-            page = int(input('爬取评论页数(仅爬取指定页数评论)：'))
-            if page >= 1:
-                pass
-            else:
-                raise ValueError('爬取评论总页数输入错误')
-            return url, page
-        else:
-            raise ValueError('视频网址格式错误')
-    else:
+    if not bool(bv):
         raise ValueError('视频网址格式错误')
+    if len(bv[0].split('/')) != 1:
+        raise ValueError('视频网址格式错误')
+    page = int(input('爬取评论页数(仅爬取指定页数评论)：'))
+    if page < 1:
+        raise ValueError('爬取评论总页数输入错误')
+    return url, page
 
 
 def get_url(url, page):
@@ -65,8 +59,8 @@ def deal_data(jsdata):
         mdata.append(asign)
         amessage = jsdata['data']['replies'][i]['content']['message']
         mdata.append(amessage)
+        idata = []
         if bool(jsdata['data']['replies'][i]['replies']):
-            idata = []
             for j in range(len(jsdata['data']['replies'][i]['replies'])):
                 idata_cache = []
                 iname = jsdata['data']['replies'][i]['replies'][j]['member']['uname']
@@ -78,18 +72,13 @@ def deal_data(jsdata):
                 imessage = jsdata['data']['replies'][i]['replies'][j]['content']['message']
                 idata_cache.append(imessage)
                 idata.append(idata_cache)
-            mdata.append(idata)
-        else:
-            idata = []
-            mdata.append(idata)
+        mdata.append(idata)
         data.append(mdata)
     return data
 
 
 def cloud(data):
-    cache = ''
-    for i in range(len(data)):
-        cache += data[i][3]
+    cache = ''.join(data[i][3] for i in range(len(data)))
     data = jieba.cut(cache)
     word = wordcloud.WordCloud(
         font_path='msyh.ttc',
@@ -117,16 +106,14 @@ def save_data(data):
                         else:
                             text = top[j][x][y]
                             sheet.write(x + 2 + 4 * i, y + 1, text.strip())
-            elif j == 4 and bool(1 - bool(top[j])):
-                pass
-            else:
+            elif j != 4 or not bool(1 - bool(top[j])):
                 if j == 5:
                     sheet.write(1 + 4 * i, 0, '主评论')
                 else:
                     text = top[j]
                     sheet.write(1 + 4 * i, j + 1, text.strip())
     try:
-        book.save('B站评论数据.xlsx')
+        book.save('B站评论数据.xls')
     except PermissionError:
         print('保存数据失败，请关闭xlsx文件后重新运行程序')
 

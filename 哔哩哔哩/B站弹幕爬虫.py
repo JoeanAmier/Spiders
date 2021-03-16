@@ -11,8 +11,6 @@ def input_url():
     url = input('输入视频网址：')
     if url[-1] != '/':
         url += '/'
-    else:
-        pass
     check_url = re.compile(r'^https://www.bilibili.com/video/(.*?)/$')
     bv = re.findall(check_url, url)
     if bool(bv):
@@ -27,8 +25,7 @@ def get_url(bv):
         'https://api.bilibili.com/x/player/pagelist?bvid={}&jsonp=jsonp'.format(bv))
     text = json.loads(text)
     av = text['data'][0]['cid']
-    html = 'http://comment.bilibili.com/' + str(av) + '.xml'
-    return html
+    return 'http://comment.bilibili.com/' + str(av) + '.xml'
 
 
 def open_url(url):
