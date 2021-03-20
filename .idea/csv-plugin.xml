@@ -220,6 +220,48 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\从零开始的网络爬虫\06_动态页面渲染网站爬虫_2.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\07_无页码翻页网站爬虫_1.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\07_无页码翻页网站爬虫_2.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\08_异步智能页面网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\09_大批量动态页面网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\10_数据接口参数加密网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\从零开始的网络爬虫\14_基础网站爬虫.py">
           <value>
             <Attribute>

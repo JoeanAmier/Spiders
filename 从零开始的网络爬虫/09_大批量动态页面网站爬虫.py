@@ -8,7 +8,7 @@ def get_html(template):
     """
     示例代码仅爬取前三页数据
     """
-    for page in range(0, 3):
+    for page in range(3):
         url = template.format(page * 18)
         response = open_url(url)
         html.append(response)
@@ -32,9 +32,7 @@ def get_data(html):
             movie.append(id)
             movie.append(name)
             if authors:
-                cache = ''
-                for i in authors:
-                    cache += i.replace('\n', '').strip()
+                cache = ''.join(i.replace('\n', '').strip() for i in authors)
                 movie.append(cache)
             else:
                 movie.append(authors)
@@ -70,7 +68,7 @@ def main():
     """
     真实网址：https://spa5.scrape.center/
     图书网站，无反爬，数据通过 Ajax 加载，有翻页，适合大批量动态页面渲染抓取。
-    代码测试时间：2020/12/19
+    代码测试时间：2021/3/20
     """
     url = 'https://spa5.scrape.center/api/book/?limit=18&offset={}'
     start = time.time()

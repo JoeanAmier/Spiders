@@ -17,8 +17,7 @@ def get_html(url):
         time.sleep(2)
         webdriver.ActionChains(browser).key_up(Keys.END)
         time.sleep(2)
-        html = browser.page_source
-        return html
+        return browser.page_source
     except BaseException:
         raise ValueError('发生错误')
     finally:
@@ -43,10 +42,7 @@ def get_data(html):
                 'div.el-col-md-16 > div.m-v-sm.info:nth-child(3) > span')[2].text
             published = item.select(
                 'div.el-col-md-16 > div.m-v-sm.info:nth-child(4) > span')[0]
-            if len(published) == 1:
-                published = published.text
-            else:
-                published = None
+            published = published.text if len(published) == 1 else None
             score = item.select('p.score.m-t-md.m-b-n-sm')[0].text
             movie.append(chinese_name)
             movie.append(english_name)
@@ -92,7 +88,7 @@ def main():
     """
     电影数据网站，无反爬，数据通过 Ajax 加载，无页码翻页，下拉至底部刷新，适合 Ajax 分析和动态页面渲染爬取。
     本程序使用动态网站渲染方法爬取
-    代码测试时间：2020/12/10
+    代码测试时间：2021/3/20
     """
     start = time.time()
     html = get_html(url)

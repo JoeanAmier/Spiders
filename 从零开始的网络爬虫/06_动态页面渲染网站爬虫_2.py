@@ -6,7 +6,7 @@ import json
 
 def get_html(template):
     html = []
-    for page in range(0, 10):
+    for page in range(10):
         token = open_url('http://127.0.0.1:3000/')
         url = template.format(str(page * 10), token)
         response = open_url(url)
@@ -22,7 +22,7 @@ def open_url(url):
 def get_data(html):
     data = []
     for pages in html:
-        for item in range(0, 10):
+        for item in range(10):
             movie = []
             page = json.loads(pages)
             name = page['results'][item]['name']
@@ -79,7 +79,7 @@ def main():
     下面的 url 是分析 Ajax 请求后得到的网络地址
     offset 参数代表页数，规律是：offset = (页数 - 1) * 10
     token 参数为加密参数，需要 JavaScript 逆向分析
-    代码测试时间：2020/12/10
+    代码测试时间：2021/3/20
     """
     url = 'https://spa2.scrape.center/api/movie/?limit=10&offset={}&token={}'
     start = time.time()

@@ -12,8 +12,7 @@ def open_url(browser, url):
     WebDriverWait(
         browser, timeout=5).until(
         lambda x: x.find_element_by_class_name('el-card__body'))
-    html = browser.page_source
-    return html
+    return browser.page_source
 
 
 def get_data(url):
@@ -40,9 +39,7 @@ def get_data(url):
             movie = []
             chinese_name = re.findall(findname, item)[0][0]
             english_name = re.findall(findname, item)[0][1]
-            type = ''
-            for i in re.findall(findtype, item):
-                type += i + ' '
+            type = ''.join(i + ' ' for i in re.findall(findtype, item))
             country = re.findall(findinfo, item)[0][0]
             time = re.findall(findinfo, item)[0][1]
             published = re.findall(findinfo, item)[0][2]
@@ -91,7 +88,7 @@ def main():
     电影数据网站，无反爬，数据通过 Ajax 加载，数据接口参数加密且有时间限制
     适合动态页面渲染爬取或 JavaScript 逆向分析
     此程序为动态页面渲染爬取
-    代码测试时间：2020/12/10
+    代码测试时间：2021/3/20
     """
     start = time.time()
     data = get_data(url)

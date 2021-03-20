@@ -6,7 +6,7 @@ import json
 
 def get_html(template):
     html = []
-    for page in range(0, 10):
+    for page in range(10):
         url = template + str(page * 10)
         response = open_url(url)
         html.append(response)
@@ -21,7 +21,7 @@ def open_url(url):
 def get_data(html):
     data = []
     for pages in html:
-        for item in range(0, 10):
+        for item in range(10):
             movie = []
             page = json.loads(pages)
             name = page['results'][item]['name']
@@ -76,7 +76,7 @@ def main():
     分析 Ajax 请求，通过 Ajax 请求直接获取 json 格式的网页数据
     下面的 url 是分析 Ajax 请求后得到的网络地址
     offset 参数代表页数，规律是：offset = (页数 - 1) * 10
-    代码测试时间：2020/12/10
+    代码测试时间：2021/3/20
     """
     url = 'https://spa3.scrape.center/api/movie/?limit=10&offset='
     start = time.time()

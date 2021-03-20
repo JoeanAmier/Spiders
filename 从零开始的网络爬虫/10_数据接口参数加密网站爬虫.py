@@ -6,7 +6,7 @@ import json
 
 def get_html(template):
     html = []
-    for page in range(0, 10):
+    for page in range(10):
         token = open_url('http://127.0.0.1:3000/')
         url = template.format(str(page * 10), token)
         response = open_url(url)
@@ -22,7 +22,7 @@ def open_url(url):
 def get_data(html):
     data = []
     for pages in html:
-        for item in range(0, 10):
+        for item in range(10):
             movie = []
             page = json.loads(pages)
             name = page['results'][item]['name']
@@ -75,7 +75,7 @@ def main():
     电影数据网站，数据通过 Ajax 加载，数据接口参数加密且有时间限制，源码经过混淆
     适合 JavaScript 逆向分析
     使用 06_动态页面渲染网站爬虫.js 获取加密参数
-    代码测试时间：2021/1/2
+    代码测试时间：2021/3/20
     """
     url = 'https://spa6.scrape.center/api/movie/?limit=10&offset={}&token={}'
     start = time.time()

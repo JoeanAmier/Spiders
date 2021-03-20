@@ -16,6 +16,7 @@ app.get('/', function (req, res) {
         ;
         return r;
     };
+
     function sha1(s) {
         var data = new Uint8Array(encodeUTF8(s))
         var i, j, t;
