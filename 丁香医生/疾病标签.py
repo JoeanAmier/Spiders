@@ -2,7 +2,9 @@ from requests_html import HTMLSession
 from fake_useragent import FakeUserAgent
 import re
 import json
-import sqlite3
+
+
+# import sqlite3
 
 
 def get_link(session, headers):
@@ -71,9 +73,9 @@ def main():
     session, link = get_link(session, headers)
     session, disease, tag_name = get_disease_link(session, link, headers)
     data = get_tag(session, disease, headers)
-    if len(tag_name) <= len(data):
-        print('爬取发生异常！')
-        exit()
+    # if len(tag_name) != len(data):
+    #     print('爬取发生异常！')
+    #     exit()
     print(data)
 
 
