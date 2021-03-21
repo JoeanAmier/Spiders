@@ -192,6 +192,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\从零开始的网络爬虫\01_基础网站爬虫_3.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\从零开始的网络爬虫\02_无HTTPS证书网站爬虫.py">
           <value>
             <Attribute>
@@ -273,6 +280,13 @@
           <value>
             <Attribute>
               <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\15_CSS样式偏移网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>

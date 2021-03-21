@@ -50,7 +50,15 @@ def get_data(key, html, page):
 
 
 def save_data(data):
-    database = pymysql.connect('localhost', 'root', '数据库密码', '数据库名称')
+    """首次使用需要在下方代码填写数据库信息（自行创建数据库）"""
+    try:
+        database = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='数据库密码',
+            db='数据库名称')
+    except pymysql.err.OperationalError:
+        raise ValueError("连接数据库失败，请检查数据库密码与数据库名称（运行前手动创建数据库）")
     cursor = database.cursor()
     try:
         sql = '''create table 51job
