@@ -290,6 +290,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\从零开始的网络爬虫\20_模拟登陆网站爬虫_2.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\分布式爬虫示例\加入任务队列.py">
           <value>
             <Attribute>
