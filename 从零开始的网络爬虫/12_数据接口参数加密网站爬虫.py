@@ -74,7 +74,7 @@ def main():
     真实网址：https://spa6.scrape.center/
     电影数据网站，数据通过 Ajax 加载，数据接口参数加密且有时间限制，源码经过混淆
     适合 JavaScript 逆向分析
-    使用 06_动态页面渲染网站爬虫.js 获取加密参数
+    使用 08_动态页面渲染网站爬虫.js 获取加密参数
     代码测试时间：2021/3/20
     """
     url = 'https://spa6.scrape.center/api/movie/?limit=10&offset={}&token={}'
