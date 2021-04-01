@@ -17,6 +17,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\99藏书网\99藏书网小说.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\README.md">
           <value>
             <Attribute>
@@ -199,6 +206,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\从零开始的网络爬虫\02_基础网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\从零开始的网络爬虫\02_无HTTPS证书网站爬虫.py">
           <value>
             <Attribute>
@@ -210,6 +224,13 @@
           <value>
             <Attribute>
               <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\从零开始的网络爬虫\03_基础网站爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
             </Attribute>
           </value>
         </entry>
@@ -308,6 +329,13 @@
           <value>
             <Attribute>
               <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\前程无忧\51job爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>

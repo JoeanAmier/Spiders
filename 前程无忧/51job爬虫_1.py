@@ -60,23 +60,19 @@ def save_data(data):
     except pymysql.err.OperationalError:
         raise ValueError("连接数据库失败，请检查数据库密码与数据库名称（运行前手动创建数据库）")
     cursor = database.cursor()
-    try:
-        sql = '''create table 51job
-            (链接 text,
-            职位 text,
-            发布日期 DATETIME,
-            月薪 text,
-            信息 text,
-            福利 text,
-            公司名称 text,
-            公司性质 text,
-            公司规模 text,
-            行业分类 text)'''
-        cursor.execute(sql)
-        database.commit()
-        print('新建表成功')
-    except BaseException:
-        pass
+    sql = '''create table if not exists 51job
+        (链接 text,
+        职位 text,
+        发布日期 DATETIME,
+        月薪 text,
+        信息 text,
+        福利 text,
+        公司名称 text,
+        公司性质 text,
+        公司规模 text,
+        行业分类 text)'''
+    cursor.execute(sql)
+    database.commit()
     sql = '''insert into 51job VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
     cursor.executemany(sql, data)
     database.commit()
