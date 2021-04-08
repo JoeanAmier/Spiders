@@ -339,6 +339,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\前程无忧\51job爬虫_2.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\哔哩哔哩\B站弹幕爬虫.py">
           <value>
             <Attribute>
