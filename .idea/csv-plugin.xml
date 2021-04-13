@@ -360,6 +360,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\好豆网\好豆网爬虫.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\重试装饰器示例.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\链家\链家二手房爬虫.py">
           <value>
             <Attribute>
