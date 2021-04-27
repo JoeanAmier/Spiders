@@ -6,19 +6,19 @@ from requests_html import HTMLSession
 
 def get_page_url():
     """返回每页的网址"""
-    list = []
+    list_ = []
     base = 'http://www.xiachufang.com/explore/?page='
     for page in range(1, 2):  # 测试时减少爬取量
         """生成 1 ~ 20 页的网页地址"""
         url = base + str(page)
-        list.append(url)
-    return list  # 返回 1 ~ 20 页的地址
+        list_.append(url)
+    return list_  # 返回 1 ~ 20 页的地址
 
 
-def get_url(list):
+def get_url(list_):
     """获取每个菜品的详细链接"""
     item_url = []
-    for page in list:  # 遍历每一页的网址
+    for page in list_:  # 遍历每一页的网址
         html = open_url(page)  # 请求网页
         time.sleep(random.randrange(4, 7, 1))  # 减慢爬取速度
         href = html.html.find(
@@ -107,8 +107,8 @@ def save_data(data):
 
 
 def main():
-    list = get_page_url()  # 生成每一页的网址
-    url = get_url(list)  # 获取 1 ~ 20 页的全部菜品详细链接
+    list_ = get_page_url()  # 生成每一页的网址
+    url = get_url(list_)  # 获取 1 ~ 20 页的全部菜品详细链接
     data = get_data(url)  # 提取数据
     save_data(data)  # 保存数据
 
