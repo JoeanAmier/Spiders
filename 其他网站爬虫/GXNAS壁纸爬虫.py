@@ -45,7 +45,7 @@ def sava_xlsx(data):
     book = xlwt.Workbook(encoding='utf-8')
     sheet = book.add_sheet('爬取结果', cell_overwrite_ok=True)
     tap = ('关键字', '图片链接')
-    for i in range(0, 2):
+    for i in range(2):
         sheet.write(0, i, tap[i])  # 添加列标签
     for i in range(len(data)):
         tap = data[i]
@@ -53,13 +53,13 @@ def sava_xlsx(data):
             print('\r', end='')
             print('正在保存数据到表格: {:.2f}%'.format(
                 ((i + 1) / len(data)) * 100), '▉' * ((i + 1) // (len(data) // 50)), end='')
-        elif len(data) < 100 and len(data) > 0:
+        elif len(data) > 0:
             print('\r', end='')
             print('正在保存数据到表格: {:.2f}%'.format(
                 ((i + 1) / len(data)) * 100), '▉' * ((i + 1) * 50 // (len(data))), end='')
         else:
             print('出现错误')
-        for j in range(0, 2):
+        for j in range(2):
             data_1 = tap[j]
             sheet.write(i + 1, j, data_1)
     book.save('图片爬虫.xlsx')
@@ -70,7 +70,7 @@ def sava_path(data):
     root = os.getcwd() + '\\爬取结果\\'
     header = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
-        '4.0.4147.105 Safari/537.36 Edg/84.0.522.50'}
+                      '4.0.4147.105 Safari/537.36 Edg/84.0.522.50'}
     repeat = 0
     for index, item in enumerate(data):
         url = str(item[1])
