@@ -25,11 +25,10 @@ def request_data(start):
         'fq': '',
     }
     response = requests.post(url=url, headers=header, data=data)
-    if response.status_code == 200:
-        time.sleep(random.randrange(2, 5, 1))
-        return response
-    else:
+    if response.status_code != 200:
         raise ValueError('请求项目列表失败')
+    time.sleep(random.randrange(2, 5, 1))
+    return response
 
 
 def get_data(key):
@@ -88,14 +87,14 @@ def get_download(id_list, key):
 
 
 def save_data(name, url):
-    header = {
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.41'
-                      '83.121 Safari/537.36'}
     root = os.getcwd() + '\\数据结果\\'
     path = root + name + '.' + url.split('.')[-1]
     if not os.path.exists(root):
         os.mkdir(root)
     if not os.path.exists(path):
+        header = {
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.41'
+                          '83.121 Safari/537.36'}
         response = requests.get(url, headers=header)
         time.sleep(random.randrange(2, 5, 1))
         with open(path, 'wb') as data:
@@ -111,14 +110,16 @@ def get_api_id(content_id, key):
     for item in content_id:
         response = requests.get(url=model + item, headers=header)
         time.sleep(random.randrange(2, 5, 1))
-        id_list = []
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.content.decode('utf-8'), 'lxml')
-            for index in soup.select(
-                    'div.content-box.fn-clear > table.content-tab:first-of-type > tbody > tr'):
-                id_list.append(index.select('td:last-of-type')[0].text)
-        else:
+        if response.status_code != 200:
             raise ValueError('请求详情页失败')
+        soup = BeautifulSoup(response.content.decode('utf-8'), 'lxml')
+        id_list = [
+            index.select('td:last-of-type')[0].text
+            for index in soup.select(
+                'div.content-box.fn-clear > table.content-tab:first-of-type > tbody > tr'
+            )
+        ]
+
         if bool(id_list):
             get_download(id_list, key)
 
