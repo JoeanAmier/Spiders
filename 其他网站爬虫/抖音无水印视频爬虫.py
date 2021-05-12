@@ -1,10 +1,11 @@
-import requests
 import json
 import re
 import time
 
+import requests
 
-class douyin:
+
+class DouYin:
     def __init__(self):
         self.headers = {
             'user-agent': 'Mozilla/5time.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chro'
@@ -52,5 +53,5 @@ class douyin:
 
 
 if __name__ == '__main__':
-    dy = douyin()
+    dy = DouYin()
     dy.run()

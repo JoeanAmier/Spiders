@@ -1,9 +1,10 @@
-from requests_html import HTMLSession
-import re
 import os
-import unicodedata
-import time
 import random
+import re
+import time
+
+import unicodedata
+from requests_html import HTMLSession
 from termcolor import colored
 
 
@@ -48,14 +49,13 @@ def get_text(text):
     data = []
     for page in text:
         content = page.html.find('#TextContent')
-        if len(content) == 1:
-            read = re.findall(findtext, content[0].text)
-            if len(read) == 1:
-                data.append(read[0])
-            else:
-                raise ValueError(read)
-        else:
+        if len(content) != 1:
             raise ValueError(content)
+        read = re.findall(findtext, content[0].text)
+        if len(read) == 1:
+            data.append(read[0])
+        else:
+            raise ValueError(read)
     return data
 
 

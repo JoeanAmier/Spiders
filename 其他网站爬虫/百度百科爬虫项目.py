@@ -1,8 +1,9 @@
-import requests
-from fake_useragent import FakeUserAgent
-import chardet
-from bs4 import BeautifulSoup
 from urllib import parse
+
+import chardet
+import requests
+from bs4 import BeautifulSoup
+from fake_useragent import FakeUserAgent
 
 
 class UrlManager():

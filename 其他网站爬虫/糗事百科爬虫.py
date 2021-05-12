@@ -1,5 +1,6 @@
-﻿from requests_html import HTMLSession
-import re
+﻿import re
+
+from requests_html import HTMLSession
 
 
 def get_html(list):
@@ -32,18 +33,14 @@ def get_html(list):
 def deal_text(data):
     modify2 = re.compile(r'\n[0-9]*')
     for i in data:
-        for j in range(0, 3):
+        for j in range(3):
             if i[j] is not None:
                 i[j] = modify2.sub('', i[j])
-            else:
-                pass
             if j == 0:
                 print('段子：', i[j])
             elif j == 1:
                 if i[j] is not None:
                     print('查看全文：', i[j])
-                else:
-                    pass
             else:
                 print('神评：', i[j])
                 print('\n')

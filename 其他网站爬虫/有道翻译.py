@@ -1,7 +1,8 @@
-import requests
 import hashlib
-import time
 import random
+import time
+
+import requests
 
 
 class YouDao:
@@ -21,8 +22,7 @@ class YouDao:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/8'
                           '7.0.4280.141 Safari/537.36 Edg/87.0.664.75'}
         response = requests.get('http://fanyi.youdao.com/', headers=headers)
-        cookie = [i.name + '=' + i.value for i in response.cookies]
-        return cookie
+        return [i.name + '=' + i.value for i in response.cookies]
 
     def get_data(self, key):
         url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'

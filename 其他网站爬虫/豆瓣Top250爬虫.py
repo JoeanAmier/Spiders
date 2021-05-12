@@ -1,10 +1,11 @@
-from bs4 import BeautifulSoup
-import xlwt
 import re
-import urllib.request
 import sqlite3
 import time
+import urllib.request
+
 import pymysql
+import xlwt
+from bs4 import BeautifulSoup
 from termcolor import colored
 
 
@@ -58,7 +59,7 @@ def askURL(douban):
 # 翻页爬取
 def get_data(douban):
     data_list = []  # 总数据，包含全部电影信息
-    for i in range(0, 10):  # 每一页获取网页源码
+    for i in range(10):  # 每一页获取网页源码
         print('正在解析第' + str(i) + '页')
         url = douban + str(i * 25)
         html = askURL(url)  # 返回一页网页源码
@@ -102,12 +103,12 @@ def savexlsx(datalist):
     book = xlwt.Workbook(encoding='utf-8')
     sheet = book.add_sheet('爬取结果', cell_overwrite_ok=True)  # 覆盖写入
     tap = ('链接', '电影名称', '英文名称', '评分', '评价人数', '介绍', '类型')
-    for i in range(0, 7):
+    for i in range(7):
         sheet.write(0, i, tap[i])  # 添加列标签
-    for i in range(0, 250):
+    for i in range(250):
         tap = datalist[i]
         print('正在保存第' + str(i + 1) + '条')
-        for j in range(0, 7):
+        for j in range(7):
             data_1 = tap[j]
             sheet.write(i + 1, j, data_1)
     book.save('豆瓣TOP250.xlsx')
@@ -131,7 +132,7 @@ def savedb(datalist, dbpath):
     except sqlite3.OperationalError:
         print('数据表已存在')
     for i, data in enumerate(datalist):  # 把索引赋给i，把元素赋给data
-        for index in range(0, 7):
+        for index in range(7):
             data[index] = '"' + str(data[index]) + '"'
         sql = '''insert into 豆瓣top250('链接', '电影名称',
             '英文名称', '评分', '评价人数', '介绍', '类型')
@@ -164,7 +165,7 @@ def mysql_save(datalist):
         except BaseException:
             print('数据表已存在')
         for i, data in enumerate(datalist):  # 把索引赋给i，把元素赋给data
-            for index in range(0, 7):
+            for index in range(7):
                 data[index] = '"' + str(data[index]) + '"'
             sql = '''insert into 豆瓣top250(链接, 电影名称,
                 英文名称, 评分, 评价人数, 介绍, 类型)
