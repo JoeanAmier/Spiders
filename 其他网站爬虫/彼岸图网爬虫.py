@@ -1,10 +1,11 @@
 import os
-from bs4 import BeautifulSoup
-import re
-import xlwt
-import requests
-import time
 import random
+import re
+import time
+
+import requests
+import xlwt
+from bs4 import BeautifulSoup
 from fake_useragent import FakeUserAgent
 
 
@@ -13,17 +14,16 @@ def get_url(num):
     for i in range(num):
         if i == 0:
             url = 'http://pic.netbian.com/'
-            url_list.append(url)
         else:
             url = 'http://pic.netbian.com/index_' + str(i + 1) + '.html'
-            url_list.append(url)
+        url_list.append(url)
     return url_list
 
 
 def get_html(url):
     header = {'user-agent': FakeUserAgent().chrome}
-    all_html = ''
     if isinstance(url, list):
+        all_html = ''
         for i in url:
             html = requests.get(url=i, headers=header)
             html = BeautifulSoup(html.content, 'html.parser')
@@ -60,7 +60,7 @@ def sava_xlsx(data):
     book = xlwt.Workbook(encoding='utf-8')
     sheet = book.add_sheet('爬取结果')
     tap = ('图片链接', '关键字')
-    for i in range(0, 2):
+    for i in range(2):
         sheet.write(0, i, tap[i])  # 添加列标签
     for i in range(len(data)):
         tap = data[i]
@@ -68,13 +68,13 @@ def sava_xlsx(data):
             print('\r', end='')
             print('正在保存数据到表格: {:.2f}%'.format(
                 ((i + 1) / len(data)) * 100), '▉' * ((i + 1) // (len(data) // 50)), end='')
-        elif len(data) < 100 and len(data) > 0:
+        elif len(data) > 0:
             print('\r', end='')
             print('正在保存数据到表格: {:.2f}%'.format(
                 ((i + 1) / len(data)) * 100), '▉' * ((i + 1) * 50 // (len(data))), end='')
         else:
             print('出现错误')
-        for j in range(0, 2):
+        for j in range(2):
             data_1 = tap[j]
             sheet.write(i + 1, j, data_1)
     book.save('图片爬虫2.xlsx')
@@ -116,9 +116,7 @@ def sava_path(data):
 
 def main():
     num = int(input('爬取页数(1 ~ 1250)：'))
-    if num >= 1 and num <= 1250:
-        pass
-    else:
+    if num < 1 or num > 1250:
         raise ValueError('页数输入错误')
     url = get_url(num)
     html = get_html(url)
