@@ -1,24 +1,25 @@
+import re
+import sqlite3
+import time
+
 import requests
 from bs4 import BeautifulSoup
-import re
-import time
-import sqlite3
 
 
 def get_html(url):
+    session = requests.Session()
     data = {'username': 'admin', 'password': 'admin'}
-    response = requests.post(url, data=data, allow_redirects=False)
-    cookie = response.cookies
+    session.post(url, data=data)
     html = ''
     for page in range(1, 11):
         url = 'https://login2.scrape.center/page/' + str(page)
-        response = open_url(cookie, url)
+        response = open_url(session, url)
         html += response
     return html
 
 
-def open_url(cookie, url):
-    response = requests.get(url, cookies=cookie)
+def open_url(session, url):
+    response = session.get(url)
     return response.text
 
 

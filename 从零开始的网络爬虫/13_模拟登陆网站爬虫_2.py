@@ -1,24 +1,25 @@
+import re
+import sqlite3
+import time
+
 import requests
 from bs4 import BeautifulSoup
-import re
-import time
-import sqlite3
 
 
 def get_html(url):
-    session = requests.Session()
     data = {'username': 'admin', 'password': 'admin'}
-    session.post(url, data=data)
+    response = requests.post(url, data=data, allow_redirects=False)
+    cookie = response.cookies
     html = ''
     for page in range(1, 11):
         url = 'https://login2.scrape.center/page/' + str(page)
-        response = open_url(session, url)
+        response = open_url(cookie, url)
         html += response
     return html
 
 
-def open_url(session, url):
-    response = session.get(url)
+def open_url(cookie, url):
+    response = requests.get(url, cookies=cookie)
     return response.text
 
 
@@ -26,7 +27,7 @@ def get_data(html):
     findname = re.compile(
         r'<h2 class=".*?" data-v-7f856186=".*?">(.*?) - (.*?)</h2>')
     findtype = re.compile(
-        r'<button class=".*?" data-v-7f856186=".*?" type="button">\n<span>(.*?)</span>')
+        r'<button class=".*?" data-v-7f856186=".*?" type_="button">\n<span>(.*?)</span>')
     findinfo = re.compile(
         r'<span data-v-7f856186="">(.*?)</span>\n<.*?> / </span>\n<span data-v-7f856186="">(.*?)</span>')
     findpublished = re.compile(
@@ -40,22 +41,17 @@ def get_data(html):
         movie = []
         chinese_name = re.findall(findname, item)[0][0]
         english_name = re.findall(findname, item)[0][1]
-        type = ''
-        for i in re.findall(findtype, item):
-            type += i + ' '
+        type_ = ''.join(i + ' ' for i in re.findall(findtype, item))
         country = re.findall(findinfo, item)[0][0]
-        time = re.findall(findinfo, item)[0][1]
+        time_ = re.findall(findinfo, item)[0][1]
         published = re.findall(findpublished, item)
-        if len(published) == 1:
-            published = published[0]
-        else:
-            published = None
+        published = published[0] if len(published) == 1 else None
         score = re.findall(findscore, item)[0].strip()
         movie.append(chinese_name)
         movie.append(english_name)
-        movie.append(type.strip())
+        movie.append(type_.strip())
         movie.append(country)
-        movie.append(time)
+        movie.append(time_)
         movie.append(published)
         movie.append(score)
         data.append(movie)
@@ -92,7 +88,7 @@ def main():
     url = 'https://login2.scrape.center/login?next=/'
     """
     对接 Session + Cookies 模拟登录，适合用作 Session + Cookies 模拟登录练习。
-    代码测试时间：2020/12/27
+    代码测试时间：2021/3/25
     """
     start = time.time()
     html = get_html(url)
