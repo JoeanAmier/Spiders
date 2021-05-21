@@ -27,7 +27,8 @@ def get_data(html):
     findname = re.compile(
         r'<h2 class=".*?" data-v-7f856186=".*?">(.*?) - (.*?)</h2>')
     findtype = re.compile(
-        r'<button class=".*?" data-v-7f856186=".*?" type_="button">\n<span>(.*?)</span>')
+        r'<button class="el-button category el-button--primary el-button--mini" data-v-7f856186="" ty'
+        r'pe="button">\n<span>(.*?)</span>')
     findinfo = re.compile(
         r'<span data-v-7f856186="">(.*?)</span>\n<.*?> / </span>\n<span data-v-7f856186="">(.*?)</span>')
     findpublished = re.compile(
@@ -88,7 +89,7 @@ def main():
     url = 'https://login2.scrape.center/login?next=/'
     """
     对接 Session + Cookies 模拟登录，适合用作 Session + Cookies 模拟登录练习。
-    代码测试时间：2021/3/25
+    代码测试时间：2021/5/21
     """
     start = time.time()
     html = get_html(url)

@@ -41,16 +41,11 @@ def get_data(html):
         movie = []
         chinese_name = re.findall(findname, item)[0][0]
         english_name = re.findall(findname, item)[0][1]
-        type = ''
-        for i in re.findall(findtype, item):
-            type += i + ' '
+        type = ''.join(i + ' ' for i in re.findall(findtype, item))
         country = re.findall(findinfo, item)[0][0]
         time = re.findall(findinfo, item)[0][1]
         published = re.findall(findpublished, item)
-        if len(published) == 1:
-            published = published[0]
-        else:
-            published = None
+        published = published[0] if len(published) == 1 else None
         score = re.findall(findscore, item)[0].strip()
         movie.append(chinese_name)
         movie.append(english_name)
@@ -93,7 +88,7 @@ def main():
     url = 'https://login2.scrape.center/login?next=/'
     """
     对接 Session + Cookies 模拟登录，适合用作 Session + Cookies 模拟登录练习。
-    代码测试时间：2020/12/27
+    代码测试时间：2021/5/20
     """
     start = time.time()
     html = get_html(url)
