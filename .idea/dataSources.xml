@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="网络爬虫数据库" uuid="3c9dc4e3-f785-403f-a0cb-49592ecf04be">
-      <driver-ref>99c5fefc-9386-4642-b5a2-84f4ec606f93</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\yongquan\Documents\编程数据\Spiders\从零开始的网络爬虫\网络爬虫数据库.db</jdbc-url>
-      <libraries>
-        <library>
-          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.31.1/sqlite-jdbc-3.31.1.jar</url>
-        </library>
-      </libraries>
-    </data-source>
-    <data-source source="LOCAL" name="51job" uuid="4378c782-91ad-40d7-b103-fb3391f8ceb1">
+    <data-source source="LOCAL" name="网络爬虫数据库" uuid="77316487-a30d-4d5f-aefc-6cd103820539">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\yongquan\Documents\编程数据\Spiders\前程无忧\51job.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:\yongquan\Documents\编程数据\Spiders\从零开始的网络爬虫\网络爬虫数据库.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>
