@@ -1,7 +1,7 @@
-import requests
-from redis import Redis
 import parsel
+import requests
 from fake_useragent import FakeUserAgent
+from redis import Redis
 
 
 def push_redis_list(text):
