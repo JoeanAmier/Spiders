@@ -1,10 +1,9 @@
-from requests_html import HTMLSession
-from fake_useragent import FakeUserAgent
-import re
 import json
+import re
+import sqlite3
 
-
-# import sqlite3
+from fake_useragent import FakeUserAgent
+from requests_html import HTMLSession
 
 
 def get_link(session, headers):
@@ -52,12 +51,12 @@ def get_tag(session, disease, headers):
     return data
 
 
-# def save_data(tag_name, data):
-#     db = sqlite3.connect('疾病标签数据库.db')
-#     cursor = db.cursor()
-#     sql = """create table 疾病标签
-#     (疾病名称
-#     标签)"""
+def save_data(tag_name, data):
+    db = sqlite3.connect('疾病标签数据库.db')
+    cursor = db.cursor()
+    sql = """create table 疾病标签
+    (疾病名称
+    标签)"""
 
 
 def main():
@@ -73,9 +72,9 @@ def main():
     session, link = get_link(session, headers)
     session, disease, tag_name = get_disease_link(session, link, headers)
     data = get_tag(session, disease, headers)
-    # if len(tag_name) != len(data):
-    #     print('爬取发生异常！')
-    #     exit()
+    if len(tag_name) != len(data):
+        print('爬取发生异常！')
+        exit()
     print(data)
 
 
