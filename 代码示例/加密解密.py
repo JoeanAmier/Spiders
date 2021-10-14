@@ -42,7 +42,7 @@ class USE_AES:
         return str(base64.encodebytes(aes.encrypt(self.to_16(text))),
                    encoding='utf8').replace('\n', '')  # 加密
 
-    def decodebytes(self, text):
+    def decode_bytes(self, text):
         aes = self.aes()
         return str(aes.decrypt(base64.decodebytes(bytes(
             text, encoding='utf8'))).rstrip(b'\0').decode("utf8"))  # 解密
@@ -241,18 +241,19 @@ def USE_SHA(text):
 
 
 if __name__ == '__main__':
-    aes_test = USE_AES("assssssssdfasasasasa")
-    a = aes_test.encrypt("测试")
-    b = aes_test.decodebytes(a)
+    aes_test = USE_AES("secretKey")
+    ciphertext = aes_test.encrypt("测试")
+    plaintext = aes_test.decode_bytes(ciphertext)
+    print(ciphertext, plaintext)
     rsa_test = USE_RSA()
-    a = rsa_test.rsaEncrypt("测试加密")
-    b = rsa_test.rsaDecrypt(a)
+    ciphertext = rsa_test.rsaEncrypt("测试加密")
+    plaintext = rsa_test.rsaDecrypt(ciphertext)
     des_test = USE_DES(b"12345678", b"12345678")
-    a = des_test.encrypt("测试加密")
-    b = des_test.descrypt(a)
+    ciphertext = des_test.encrypt("测试加密")
+    plaintext = des_test.descrypt(ciphertext)
     des3_test = USE_DES3(b"123456789qazxswe")
-    a = des3_test.encrypt("测试加密")
-    b = des3_test.decrypt(a)
+    ciphertext = des3_test.encrypt("测试加密")
+    plaintext = des3_test.decrypt(ciphertext)
     md5_test = USE_MD5("测试签名")
     hmac_test = USE_HMAC("123456", "测试")
     sha_test = USE_SHA("测试加密")
