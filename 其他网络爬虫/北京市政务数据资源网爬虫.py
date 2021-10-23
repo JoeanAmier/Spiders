@@ -1,10 +1,11 @@
-import requests
 import json
-from bs4 import BeautifulSoup
+import os
+import random
 import re
 import time
-import random
-import os
+
+import requests
+from bs4 import BeautifulSoup
 
 
 def request_data(start):

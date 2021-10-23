@@ -1,9 +1,10 @@
+import os
+import pickle
+import random
+import time
+
 import requests
 from bs4 import BeautifulSoup
-import pickle
-import os
-import time
-import random
 from pymongo import MongoClient
 
 

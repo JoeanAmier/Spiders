@@ -1,6 +1,7 @@
-import time
 import random
 import sqlite3
+import time
+
 from requests_html import HTMLSession
 
 
