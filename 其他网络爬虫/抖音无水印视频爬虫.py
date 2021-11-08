@@ -27,8 +27,8 @@ class DouYin:
         json_str = json.loads(response)
         download_url = json_str['item_list'][0]['video']['play_addr']['url_list'][0].replace(
             "playwm", "play")
-        name = re.findall(r'(.*)https://v.douyin.com', share)[0]
-        name = name.strip()
+        name = json.loads(response)[
+            'item_list'][0]['share_info']['share_title']
         with open(name + '.mp4', 'wb') as f:
             f.write(
                 requests.get(
