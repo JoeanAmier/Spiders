@@ -1,12 +1,13 @@
-from pyppeteer import launch
 import asyncio
 import os
-from bs4 import BeautifulSoup
-import re
-import xlwt
-import requests
-import time
 import random
+import re
+import time
+
+import requests
+import xlwt
+from bs4 import BeautifulSoup
+from pyppeteer import launch
 
 
 async def get_html(url, num):
