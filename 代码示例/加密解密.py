@@ -5,7 +5,9 @@ import hmac
 import rsa
 from Crypto.Cipher import AES
 from Crypto.Cipher import DES3
-from pyDes import des, CBC, PAD_PKCS5
+from pyDes import CBC
+from pyDes import PAD_PKCS5
+from pyDes import des
 
 
 class USE_AES:
@@ -248,12 +250,16 @@ if __name__ == '__main__':
     rsa_test = USE_RSA()
     ciphertext = rsa_test.rsaEncrypt("测试加密")
     plaintext = rsa_test.rsaDecrypt(ciphertext)
+    print(ciphertext, plaintext)
     des_test = USE_DES(b"12345678", b"12345678")
     ciphertext = des_test.encrypt("测试加密")
     plaintext = des_test.descrypt(ciphertext)
+    print(ciphertext, plaintext)
     des3_test = USE_DES3(b"123456789qazxswe")
     ciphertext = des3_test.encrypt("测试加密")
     plaintext = des3_test.decrypt(ciphertext)
+    print(ciphertext, plaintext)
     md5_test = USE_MD5("测试签名")
     hmac_test = USE_HMAC("123456", "测试")
     sha_test = USE_SHA("测试加密")
+    print(ciphertext, plaintext)
