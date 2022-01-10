@@ -1,5 +1,7 @@
-import requests
 import re
+
+import requests
+from parsel import Selector
 
 
 def get_code(url):
@@ -22,19 +24,31 @@ def get_code(url):
         "Sec-Fetch-User": "?1",
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.62 "
-    }
-    return requests.get(url, headers=headers).content
+                      "Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.62 "}
+    resource = requests.get(url, headers=headers)
+    if resource.status_code == requests.codes.ok:
+        return resource.text
+    return ""
+
+
+def selector(code):
+    return Selector(text=code)
+
+
+def get_text(select):
+    text = select.xpath("//div[@id='post_body']/p/text()").getall()
+    [print(i) for i in text]
 
 
 def main():
     # url = input('输入文章链接：')
     url = 'https://www.expreview.com/80774.html'
-    if not re.match(r'https://www.expreview.com/\d+.html', url):
-        print('文章链接格式错误！')
-    else:
+    if re.match(r'https://www.expreview.com/\d+?.html', url):
         code = get_code(url)
-        print(code)
+        select = selector(code)
+        get_text(select)
+    else:
+        print('文章链接格式错误！')
 
 
 if __name__ == '__main__':
