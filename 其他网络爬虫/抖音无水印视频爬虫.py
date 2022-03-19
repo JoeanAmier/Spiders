@@ -8,8 +8,8 @@ import requests
 class DouYin:
     def __init__(self):
         self.headers = {
-            'user-agent': 'Mozilla/5time.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chro'
-                          'me/77.0.3904.108 Safari/537.36'}
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.46'}
         self.android_headers = {'user-agent': 'Android'}
 
     def get_share_url(self, url):
@@ -42,8 +42,7 @@ class DouYin:
             print(6 - i, end='')
 
     def run(self):
-        print("请输入抖音短视频分享链接：")
-        share = input()
+        share = input("请输入抖音短视频分享链接：")
         url = re.findall(r'https://v.douyin.com/.*/', share)[0]
         location = self.get_share_url(url)
         vid = re.findall(r'/share/video/(\d*)', location)[0]
